@@ -1,0 +1,33 @@
+name: vnesmario
+version: 1
+# URL Rewrite
+handle:
+- rewrite: if(!is_dir() && !is_file() && path ~ "/") goto "/index.php?%{QUERY_STRING}"
+
+- expire: if(path ~ ".js$") time 8640000
+- expire: if(path ~ ".css$") time 8640000
+- compress: if(out_header["Content-Type"] == "text/html") compress
+- compress: if(out_header["Content-Type"] == "application/json") compress
+
+
+cron:
+
+  - description: recalucate daily counter
+  url: api/recalculate_daily_counter.php?date=yesterday
+  schedule: 1 0 * * *
+
+  - description: recalucate daily counter
+  url: api/recalculate_daily_counter.php
+  schedule: 1 0 * * *
+  
+  - description: 
+  url: api/recalculate_seconds_spent_per_day.php?date=yesterday
+  schedule: 1 0 * * *
+  
+  - description: 导出日活跃设备号列表到
+  url: api/export_daily_active_device_ids.php?date=yesterday
+  schedule: 0 2 * * *
+  
+  - description: 计算日留存
+  url: api/recalculate_daily_retention.php?date=yesterday
+  schedule: 0 3 * * *
