@@ -12,3 +12,7 @@ TCClick统计平台服务器端
 4. windows phone 客户端
 
 5. 性能优化，节省云豆
+
+在SAE平台上的安装部署文档参见博文：[http://blog.yorkgu.me/2012/09/29/install_tcclick_on_sina_app_engine/](http://blog.yorkgu.me/2012/09/29/install_tcclick_on_sina_app_engine/)
+
+目前遭遇SAE数据库超配额问题(日活跃较大的情况下)，正着手解决中...
