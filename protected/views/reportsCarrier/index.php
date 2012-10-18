@@ -44,7 +44,7 @@ foreach (TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 <div class="block">
   <h3>TOP 20 运营商 <span class='right'><?php echo $start_date?> ~ <?php echo $end_date?> </span></h3>
   <ul class="tabs">
-    <li id="tab_active_carrier" class="tab current">新增用户</li> 
+    <li id="tab_active_carrier" class="tab current">活跃用户</li> 
     <li id="tab_new_carrier" class="tab">新增用户</li> 
   </ul>
   <div class="panels">
