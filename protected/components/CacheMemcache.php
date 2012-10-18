@@ -33,5 +33,14 @@ class CacheMemcache{
 	public function add($key, $value, $expire=0){
 		return memcache_add($this->mmc, $key, $value, false, $expire);
 	}
+	
+	public function incr($key, $value=1, $create=false){
+		$result = memcache_increment($this->mmc, $key, $value);
+		if($result === false && $create){
+			$this->add($key, 0);
+			$result = memcache_increment($this->mmc, $key, $value);
+		}
+		return $result;
+	}
 }
 

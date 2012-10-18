@@ -3,7 +3,7 @@ include_once "ReportsController.php";
 
 class ExceptionsController extends  Controller{
 	public function filters(){
-		return array("LoginRequiredFilter");
+		return array("LoginRequiredFilter - AjaxListUnLocated,AjaxView,AjaxSetLocatedContent");
 	}
 	
 	
@@ -78,9 +78,11 @@ class ExceptionsController extends  Controller{
   	header("Content-type: application/json;charset=utf-8");
   	$start_date = $_GET['start_date'] ? $_GET['start_date'] : date("Y-m-d", time()-86400*30);
   	$end_date = $_GET['end_date'] ? $_GET['end_date'] : date("Y-m-d", time());
+  	$version_id = intval($_GET['version_id']);
   	$json = array("stats"=>array(), "result"=>"success");
   	$daily_count_with_dates = ReportsController::generateZeroDailyCount($start_date, $end_date);
-  	$sql = "select `date`, `count` from {counter_exceptions} where `date`>=:start and `date`<=:end";
+  	$sql = "select `date`, `count` from {counter_exceptions} where `date`>=:start and `date`<=:end
+  	and version_id={$version_id}";
   	$stmt = TCClick::app()->db->query($sql, array(":start"=>$start_date, ":end"=>$end_date));
   	foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
   		$daily_count_with_dates[$row['date']] = intval($row['count']);

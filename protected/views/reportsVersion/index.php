@@ -1,4 +1,11 @@
-<h1>版本分布</h1>
+<h1>版本分布
+<?php echo TCClickUtil::selector(array(
+		array("label"=>"最近一月", "from"=>date("Y-m-d", time()-86400*30)),
+		array("label"=>"最近两月", "from"=>date("Y-m-d", time()-86400*60)),
+		array("label"=>"最近三月", "from"=>date("Y-m-d", time()-86400*90)),
+		array("label"=>"最近一年", "from"=>date("Y-m-d", time()-86400*365)),
+))?>
+</h1>
 
 <div class="block">
 	<h3>趋势</h3>
@@ -18,7 +25,8 @@
 <script>
 $(function(){
 	render_chart('panel_daily_new_devices','',root_url+'reportsVersion/AjaxDailyNewDevices', {}, false,
-			{tooltip: {formatter: function() { return this.x + ': 新增 '+ this.y + ' 台设备';}} } );
+			{tooltip: {formatter: function() { return this.x + ': 新增 '+ this.y + ' 台设备';}},
+		 } );
 	$("#tab_daily_active_devices").click(function(){
 		$("#panel_daily_active_devices").show();
 		render_chart('panel_daily_active_devices','',root_url+'reportsVersion/AjaxDailyActiveDevices', {}, false,

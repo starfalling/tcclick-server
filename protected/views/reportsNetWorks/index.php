@@ -1,7 +1,6 @@
 <?php 
-$time = time();
-$start_date = date('Y-m-d', $time-86400*30);
-$end_date = date('Y-m-d', $time);
+$start_date = $_GET['from'] ? $_GET['from'] : date("Y-m-d", time()-86400*30);
+$end_date = $_GET['to'] ? $_GET['to'] : date("Y-m-d", time());
 $network_active_sql  = "select network_id, sum(count) as sc from {counter_daily_active_network}
 	where date>='$start_date' and date<='$end_date' 
 	group by  network_id order by sc DESC";
@@ -15,9 +14,15 @@ foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 }
 
 ?>
-<h1>活跃用户联网方式</h1>
+<h1>活跃设备的联网方式
+<?php echo TCClickUtil::selector(array(
+		array("label"=>"最近一月", "from"=>date("Y-m-d", time()-86400*30)),
+		array("label"=>"最近两月", "from"=>date("Y-m-d", time()-86400*60)),
+		array("label"=>"最近三月", "from"=>date("Y-m-d", time()-86400*90)),
+		array("label"=>"最近一年", "from"=>date("Y-m-d", time()-86400*365)),
+))?></h1>
 <div class="block">
-<h3>TOP 10 联网方式分布  <span style="float: right;"><?php echo $start_date?> ~ <?php echo $end_date?> </span>
+<h3>联网方式分布  <span style="float: right;"><?php echo $start_date?> ~ <?php echo $end_date?> </span>
 
 </h3>
   <table>

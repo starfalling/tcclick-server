@@ -17,8 +17,16 @@ class AnalyzeListenerException implements IAnalyzeListener{
 			$params = array();
 			$params[':updated_at'] = date("Y-m-d H:i:s", $analyze->server_timestamp);
 			$params[':exception'] = $exception->exception;
-			if($exception->md5) $params[':md5'] = $exception->md5;
-			else $params[':md5'] = md5($exception->exception);
+			
+			// 执行md5计算，去除掉错误日志第一行进行计算
+			$exception_for_md5 = substr($exception->exception, strpos($exception->exception, "\n"));
+			if ($analyze->device->brand == "Apple"){ // ios 版本，错误日志的md5值进行特殊处理
+				// 去除掉每一行最末位的 + 166 这种格式的部分，因为这部分导致记录的错误日志过多，使得错误收集失去价值
+				$params[':md5'] = md5(preg_replace('| \\+ [0-9]+$|', '', $exception->exception));
+			}else{
+				$params[':md5'] = md5($exception_for_md5);
+			}
+			
 			$params[':version_id'] = $analyze->device->version_id;
 			TCClick::app()->db->execute($sql, $params);
 		}

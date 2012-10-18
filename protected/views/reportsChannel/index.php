@@ -1,4 +1,10 @@
-<h1>渠道分布</h1>
+<h1>渠道分布
+<?php echo TCClickUtil::selector(array(
+		array("label"=>"最近一月", "from"=>date("Y-m-d", time()-86400*30)),
+		array("label"=>"最近两月", "from"=>date("Y-m-d", time()-86400*60)),
+		array("label"=>"最近三月", "from"=>date("Y-m-d", time()-86400*90)),
+		array("label"=>"最近一年", "from"=>date("Y-m-d", time()-86400*365)),
+))?></h1>
 
 <div class="block">
 	<h3>时段分析</h3>

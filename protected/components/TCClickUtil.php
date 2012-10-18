@@ -155,7 +155,8 @@ class TCClickUtil{
 					$url = preg_replace("/\\?{$k_encoded}=[^&]+/", '?', $url);
 					$url = preg_replace("/&{$k_encoded}=[^&]+/", '?', $url);
 				}
-				$url .= "{$k_encoded}={$v_encoded}&";
+				if($v === false) continue;
+				$url .= "&{$k_encoded}={$v_encoded}";
 			}
 		}
 		return $url;
@@ -181,7 +182,7 @@ class TCClickUtil{
 		}
 		$i=0;
 		$to = $current_page<=4 ? $current_page+1 : 2;
-		if($pages_count <= 2) $to = 1;
+		if($to >= $pages_count) $to = $pages_count-1;
 		for($i=1; $i<=$to; $i++){
 			if($i == $current_page){
 				echo "<span class='page current'>{$i}</span>";
@@ -206,9 +207,11 @@ class TCClickUtil{
 			}
 		}
 		
-		if ($i<$pages_count-1){
-			$i=$pages_count-1;
-			echo '<span class="gap">...</span>';
+		if ($i<=$pages_count){
+			if($i < $pages_count-1){
+				$i = $pages_count-1;
+				echo '<span class="gap">...</span>';
+			}
 			for(; $i<=$pages_count; $i++){
 				if($i == $current_page){
 					echo "<span class='page current'>{$i}</span>";
@@ -222,7 +225,7 @@ class TCClickUtil{
 		if($current_page<$pages_count){
 			$url = TCClickUtil::createUrl(NULL, array("page"=>$current_page+1));
 			echo "<span class='page'><a href='$url'>下一页</a></span>";
-			$url = TCClickUtil::createUrl(NULL, array("page"=>1));
+			$url = TCClickUtil::createUrl(NULL, array("page"=>$pages_count));
 			echo "<span class='page'><a href='$url'>末页</a></span>";
 		}
 		
@@ -233,6 +236,37 @@ class TCClickUtil{
 			ob_end_clean();
 			return $html;
 		}
+	}
+	
+	public static function selector($options){
+		$selected_option_index = 0;
+		foreach($options as $i=>&$option){
+			$label = $option['label'];
+			unset($option['label']);
+			$is_current_option_selected = true;
+			foreach($option as $key=>$value){
+				if($_GET[$key] != $value){
+					$is_current_option_selected = false;
+				}
+			}
+			if($is_current_option_selected){
+				$selected_option_index = $i;
+			}
+			$option['url'] = self::createUrl(NULL, $option);
+			$option['label'] = $label;
+		}
+		echo "<div class='selector'>";
+		echo "<span class='selected_value'>{$options[$selected_option_index]['label']}</span>";
+		echo "<div class='select_list'><ul>";
+		foreach($options as $i=>&$option){
+			if($i==$selected_option_index){
+				echo "<li class='selected'><a href='{$option['url']}'>{$option['label']}</a></li>";
+			}else{
+				echo "<li><a href='{$option['url']}'>{$option['label']}</a></li>";
+			}
+		}
+		echo "</ul></div>";
+		echo "</div>";
 	}
 }
 

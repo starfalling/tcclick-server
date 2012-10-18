@@ -1,6 +1,6 @@
 <?php
-$from = date('Y-m-d', time()-86400*30);
-$to = date('Y-m-d', time()-86400);
+$from = $_GET['from'] ? $_GET['from'] : date('Y-m-d', time()-86400*30);
+$to = $_GET['to'] ? $_GET['to'] : date('Y-m-d', time()-86400);
 $channel_id = intval($_GET['channel_id']);
 $type = 'daily';
 
@@ -9,7 +9,13 @@ and channel_id={$channel_id} order by `date`";
 $rows = TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
-<h1>留存用户</h1>
+<h1>留存用户
+<?php echo TCClickUtil::selector(array(
+		array("label"=>"最近一月", "from"=>date("Y-m-d", time()-86400*30)),
+		array("label"=>"最近两月", "from"=>date("Y-m-d", time()-86400*60)),
+		array("label"=>"最近三月", "from"=>date("Y-m-d", time()-86400*90)),
+		array("label"=>"最近一年", "from"=>date("Y-m-d", time()-86400*365)),
+))?></h1>
 <div class="block">
   <table class='retention'>
 		<thead><tr>

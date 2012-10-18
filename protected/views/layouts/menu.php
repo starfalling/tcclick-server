@@ -7,8 +7,8 @@
 	</dl>
 	<dl>
 		<dt>用户分析<b></b></dt>
-		<dd><a href="<?php echo TCClick::app()->root_url?>reportsActive">活跃用户</a></dd>
-		<dd><a href="<?php echo TCClick::app()->root_url?>reportsRetention">留存用户</a></dd>
+		<dd><a href="<?php echo TCClick::app()->root_url?>reportsActive">活跃设备</a></dd>
+		<dd><a href="<?php echo TCClick::app()->root_url?>reportsRetention">留存设备</a></dd>
 		<dd><a href="<?php echo TCClick::app()->root_url?>reportsLaunch">使用频率</a></dd>
 		<dd><a href="<?php echo TCClick::app()->root_url?>reportsSecondsSpent">使用时长</a></dd>
 		<dd><a href="<?php echo TCClick::app()->root_url?>reportsAreas">地域</a></dd>

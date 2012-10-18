@@ -63,8 +63,8 @@ class ReportsChannelController extends Controller{
 	
 	public function actionAjaxDailyNewDevices(){
 		header("Content-type: application/json;charset=utf-8");
-		$start_date = $_GET['start_date'] ? $_GET['start_date'] : date("Y-m-d", time()-86400*30);
-		$end_date = $_GET['end_date'] ? $_GET['end_date'] : date("Y-m-d", time());
+		$start_date = $_GET['from'] ? $_GET['from'] : date("Y-m-d", time()-86400*30);
+		$end_date = $_GET['to'] ? $_GET['to'] : date("Y-m-d", time());
 		$json = array("stats"=>array(), "result"=>"success");
 		$daily_count_with_dates = array();
 		$sql = "select `date`, `count`, channel_id from {counter_daily_new}
@@ -87,8 +87,8 @@ class ReportsChannelController extends Controller{
 	
 	public function actionAjaxDailyActiveDevices(){
 		header("Content-type: application/json;charset=utf-8");
-		$start_date = $_GET['start_date'] ? $_GET['start_date'] : date("Y-m-d", time()-86400*30);
-		$end_date = $_GET['end_date'] ? $_GET['end_date'] : date("Y-m-d", time());
+		$start_date = $_GET['from'] ? $_GET['from'] : date("Y-m-d", time()-86400*30);
+		$end_date = $_GET['to'] ? $_GET['to'] : date("Y-m-d", time());
 		$json = array("stats"=>array(), "result"=>"success");
 		$daily_count_with_dates = array();
 		$sql = "select `date`, `count`, channel_id from {counter_daily_active}

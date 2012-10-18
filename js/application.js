@@ -1,3 +1,9 @@
+function getURLParameter(name) {
+    return decodeURI(
+        (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
+    );
+}
+
 
 $(function(){
 	$("#page_menu dt").click(function(){
@@ -69,6 +75,32 @@ $(function(){
 		});
 		container_block.load(this.href);
 		return false;
+	});
+	
+	/** 日期、渠道、版本的选择器组件 */
+	$(".selected_value").click(function(event){
+		var height = $(this).parent().find("li").length*26;
+		var current_height = $(this).parent().children(".select_list").css("height");
+		if(current_height == "0px"){
+			$(this).parent().children(".select_list").animate({
+				height: height+'px'
+			}, 300);
+		}else{
+			$(this).parent().children(".select_list").animate({
+				height: '0'
+			}, 300);
+		}
+		event.stopPropagation();
+	});
+	$('html').click(function() {
+		// http://stackoverflow.com/questions/152975/how-to-detect-a-click-outside-an-element
+		$(".select_list").each(function(){
+			if($(".select_list").css("height") != '0px'){
+				$(".select_list").animate({
+					height: '0'
+				}, 300);
+			}
+		});
 	});
 });
 
@@ -157,6 +189,21 @@ function render_chart(chart_id, title, data_src_url, params, force_reload, opts)
 		},
 		baseZ:997
 	});
+	var fromDate = toDate = null;
+	if(getURLParameter("from")!='null'){
+		fromDate = new Date(getURLParameter("from"));
+		params["from"] = getURLParameter("from");
+	}
+	if(getURLParameter("to")!='null'){
+		toDate = new Date(getURLParameter("to"));
+		params["to"] = getURLParameter("to");
+	}else{
+		toDate = new Date();
+	}
+	if(fromDate != null && toDate - fromDate >= 40*86400000){
+		$.extend(opts, {plotOptions:{spline:{marker:{enabled: false}}}});
+	}
+	
 	$.get( data_src_url, params, function(resp){
 		if( resp.result == 'success'){
 			$.each(resp.dates, function(i,date){

@@ -15,16 +15,26 @@ class Channel{
 		return self::$all_channels;
 	}
 	
-	private static function reload(){
-		self::$all_channels = array();
-		$sql = "select * from {channels}";
-		$stmt = TCClick::app()->db->query($sql);
-		while(true){
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			if(!$row) break;
-			self::$all_channels[$row['channel']] = $row['id'];
+	private static function reload($refreshCache=false){
+		if(!$refreshCache){
+			self::$all_channels = TCClick::app()->cache->get('tcclick_all_channels');
+		}else{
+			self::$all_channels = false;
 		}
+		if(self::$all_channels === false){
+			self::$all_channels = array();
+			$sql = "select * from {channels}";
+			$stmt = TCClick::app()->db->query($sql);
+			while(true){
+				$row = $stmt->fetch(PDO::FETCH_ASSOC);
+				if(!$row) break;
+				self::$all_channels[$row['channel']] = $row['id'];
+			}
+			TCClick::app()->cache->set('tcclick_all_channels', self::$all_channels);
+		}
+		return self::$all_channels;
 	}
+	
 	/**
 	 * add a channel to database by name
 	 * @param string $channel
@@ -32,10 +42,11 @@ class Channel{
 	public static function add($channel){
 		$sql = "insert ignore into {channels} (channel) values (:channel)";
 		TCClick::app()->db->execute($sql, array(":channel"=>$channel));
-		self::reload();
+		self::reload(true);
 	}
 	
 	/**
+	 * query unique id of the channel in database, create one if not exist 
 	 * @param string $channel
 	 */
 	public static function idFor($channel){
@@ -47,6 +58,11 @@ class Channel{
 		return $all_channels[$channel];
 	}
 	
+	/**
+	 * query channel name by chanel id
+	 * @param integer $id
+	 * @return string
+	 */
 	public static function nameOf($id){
 		foreach(self::all() as $name=>$channel_id){
 			if($channel_id == $id) return $name;

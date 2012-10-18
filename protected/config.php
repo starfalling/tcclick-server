@@ -3,7 +3,7 @@
 define("IS_ANDROID", 1);
 define("TCCLICK_DEBUG", 1);
 
-if(defined('SAE_TMP_PATH')) include_once 'config_sae.php';
+if(defined('SAE_TMP_PATH')) include 'config_sae.php';
 
 define("MYSQL_DSN_MASTER", "mysql:host=localhost;port=3306;dbname=tcclick;charset=utf8");
 define("MYSQL_USER_MASTER", "root");

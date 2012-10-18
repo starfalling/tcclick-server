@@ -1,4 +1,5 @@
 <?php
+include 'DBConnection.php';
 
 /**
  * @property DBConnection $db
@@ -13,7 +14,6 @@ class Application{
 	private $cache;
 	
 	public function __construct(){
-		include_once 'DBConnection.php';
 		$this->db = new DBConnection();
 		$this->root_path = dirname(dirname(dirname(__FILE__)));
 		$this->root_url = dirname($_SERVER['SCRIPT_NAME']);
@@ -67,14 +67,14 @@ class Application{
 			$method = 'action' . $action;
 			$class_file_path = $this->root_path . '/protected/controllers/' . $class . '.php';
 			if(file_exists($class_file_path)){
-				include_once $class_file_path;
+				include $class_file_path;
 				$instance = new $class;
 				if(method_exists($instance, $method)){
 					if($this->preFilter($instance, $action)){
 						$instance->$method();
 						return;
 					}else{
-						header('HTTP/1.1 403 Not Found');
+						header('HTTP/1.1 403 Access Denied');
 						echo "access denied";
 						return;
 					}
@@ -117,7 +117,7 @@ class Application{
 			
 			$class_file_path = $this->root_path . '/protected/filters/' . $class . '.php';
 			if(file_exists($class_file_path)){
-				include_once $class_file_path;
+				include $class_file_path;
 				$filter_instance = new $class;
 				$filter_instance->controller_instance = $instance;
 				$filter_instance->action_name = $action;

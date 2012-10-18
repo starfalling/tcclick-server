@@ -13,3 +13,4 @@ define("MYSQL_PASS_SLAVE", SAE_MYSQL_PASS);
 define("STORAGE_DOMAIN_EXPORTED_DEVICE_IDS", "deviceids");
 
 ini_set("display_errors", false);
+define("MYSQL_PERSISTENT", false); // SAE下使用持久连接会造成连接数超限

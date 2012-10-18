@@ -45,12 +45,14 @@ class AnalyzeListenerNewDevice implements IAnalyzeListener{
 		$params = array(":date"=>$date, ":version_id"=>$analyze->device->version_id);
 		TCClick::app()->db->execute($sql, $params);
 		
-		// daily new device counter with brand and model
-		$sql = "insert into {counter_daily_new_model} (`date`, `model_id`, `count`)
-		values (:date, :model_id, 1)
-		on duplicate key update `count`=`count`+1";
-		$params = array(":date"=>$date, ":model_id"=>$analyze->device->model_id);
-		TCClick::app()->db->execute($sql, $params);
+		if($analyze->device->model_id){
+			// daily new device counter with brand and model
+			$sql = "insert into {counter_daily_new_model} (`date`, `model_id`, `count`)
+			values (:date, :model_id, 1)
+			on duplicate key update `count`=`count`+1";
+			$params = array(":date"=>$date, ":model_id"=>$analyze->device->model_id);
+			TCClick::app()->db->execute($sql, $params);
+		}
 		
 		// daily new device counter with os version
 		$sql = "insert into {counter_daily_new_os_version} (`date`, `version_id`, `count`)

@@ -36,6 +36,11 @@ class OsVersion{
 	}
 	
 	public static function idFor($version){
+		if(preg_match('|^[0-9\\.]+|', $version, $matches)){
+			// 把 1.5.1.13-RT-20120509.203629 这种奇怪格式的版本号信息中的版本号前面部分提取出来
+			$version = $matches[0];
+		}
+		if(empty($version)) return null;
 		$all_versions = self::all();
 		if(!$all_versions[$version]){
 			self::add($version);
@@ -52,4 +57,3 @@ class OsVersion{
 	  }
 	}
 }
-

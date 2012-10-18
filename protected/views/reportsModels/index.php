@@ -1,10 +1,8 @@
 <?php 
-/**
- * 默认30天内的活跃设备和新增设备
- */
-$time = time();
-$end_date = date('Y-m-d', $time);
-$start_date = date('Y-m-d', $time-86400*30);
+
+
+$start_date = $_GET['from'] ? $_GET['from'] : date("Y-m-d", time()-86400*30);
+$end_date = $_GET['to'] ? $_GET['to'] : date("Y-m-d", time());
 $active_sql = "select model_id, sum(count) as sc from {counter_daily_active_model} 
 	where date>='$start_date' and date <='$end_date'
 	group by model_id order by sc DESC LIMIT 50";
@@ -42,13 +40,13 @@ $all_new_device = TCClick::app()->db->query($sql)->fetchColumn(0);
 ?>
 <h1>设备</h1>
 <div class="block">
-  <h3>TOP 10设备型号 <span class='right'><?php echo $start_date?> ~ <?php echo $end_date?></span></h3>
+  <h3>TOP 20设备型号 <span class='right'><?php echo $start_date?> ~ <?php echo $end_date?></span></h3>
   <ul class="tabs">
     <li id="tab_active_device" class="tab current">活跃设备</li>
     <li id="tab_new_device" class="tab">新增设备</li>
   </ul>
   <div class="panels">
-    <div id="pan_active_device" class="panel current">
+    <div id="pan_active_device" style='height:auto' class="panel current">
       <table>
 				<thead>
 					<th width="190">型号</th>
@@ -60,10 +58,10 @@ $all_new_device = TCClick::app()->db->query($sql)->fetchColumn(0);
 						<div class="label"><?php printf('%.02f', $count/$all_active_device_count*100)?>%</div>
 						<div class="chart_area"><div style="width:<?php echo $count/$max_active_device_count*100?>%"></div></div>
 					</td>
-			</tr><?php $i++;if($i==10)break;endforeach;endif;?>
+			</tr><?php $i++;if($i==20)break;endforeach;endif;?>
     </table>
     </div>
-    <div id="pan_new_device" class="panel">
+    <div id="pan_new_device" style='height:auto' class="panel">
       <table>
 				<thead>
 					<th width="190">型号</th>
@@ -75,12 +73,15 @@ $all_new_device = TCClick::app()->db->query($sql)->fetchColumn(0);
 						<div class="label"><?php printf('%.02f', $count/$all_new_device*100)?>%</div>
 						<div class="chart_area"><div style="width:<?php echo $count/$max_new_device*100?>%"></div></div>
 					</td>
-				</tr><?php $i++;if($i==10)break;endforeach;endif;?>
+				</tr><?php $i++;if($i==20)break;endforeach;endif;?>
     </table>
     </div>
   </div> 
 </div>
 
-
-<?php include_once 'device_model_ten_top.php';?>
-
+<div id="model_list_block" class="ajax_pager_container">
+</div>
+<script>$(function(){
+	<?php $url = TCClick::app()->root_url . 'reportsModels/AjaxListBlock?from='.$start_date.'&to='.$end_date?>
+	$("#model_list_block").load('<?php echo $url?>');
+})</script>

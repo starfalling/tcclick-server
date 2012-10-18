@@ -1,11 +1,11 @@
 <?php
 
-include_once "AnalyzeListenerInitDevice.php";
-include_once "AnalyzeListenerNewDevice.php";
-include_once "AnalyzeListenerVersionUpdateDevice.php";
-include_once "AnalyzeListenerActiveDevice.php";
-include_once "AnalyzeListenerUsage.php";
-include_once "AnalyzeListenerException.php";
+include "AnalyzeListenerInitDevice.php";
+include "AnalyzeListenerNewDevice.php";
+include "AnalyzeListenerVersionUpdateDevice.php";
+include "AnalyzeListenerActiveDevice.php";
+include "AnalyzeListenerUsage.php";
+include "AnalyzeListenerException.php";
 
 /**
  * @author york
@@ -65,6 +65,7 @@ class Analyzer{
 		if($activities){
 			foreach($activities as $activity){
 				$activity->start_at += $analyze->client_timeoffset;
+				if($activity->start_at > time()+86400) return; // 收集上来的客户端时间太过超前了，丢弃这样的数据
 				$activity->end_at += $analyze->client_timeoffset;
 				$activity->seconds_spent = $activity->end_at - $activity->start_at;
 			}

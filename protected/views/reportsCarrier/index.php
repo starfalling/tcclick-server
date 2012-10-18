@@ -1,16 +1,16 @@
 <?php 
-$start_date = date('Y-m-d', time()-86400*30);
-$end_date = date('Y-m-d');
+$start_date = $_GET['from'] ? $_GET['from'] : date('Y-m-d', time()-30*86400);
+$end_date = $_GET['to'] ? $_GET['to'] : date('Y-m-d');
 
 // 所有运营商的活跃设备总和
 $sql = "select sum(count) as count from {counter_daily_active_carrier}
 where date>='$start_date' and date<='$end_date'";
 $all_active_count = TCClick::app()->db->query($sql)->fetchColumn();
 
-// 按运营商进行分组的前十
+// 按运营商进行分组的前二十
 $sql = "select carrier_id, sum(count) as count from {counter_daily_active_carrier}
 where date>='$start_date' and date<='$end_date' group by carrier_id
-order by `count` desc limit 10";
+order by `count` desc limit 20";
 $max_active_count = 0;
 foreach (TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
   $active_counts[$row['carrier_id']] = $row['count'];
@@ -23,10 +23,10 @@ $sql = "select sum(count) as count from {counter_daily_new_carrier}
 where date>='$start_date' and date<='$end_date'";
 $all_new_count = TCClick::app()->db->query($sql)->fetchColumn();
 
-// 按运营商进行分组的前十
+// 按运营商进行分组的前二十
 $sql = "select carrier_id, sum(count) as count from {counter_daily_new_carrier}
 where date>='$start_date' and date<='$end_date' group by carrier_id
-order by `count` desc limit 10";
+order by `count` desc limit 20";
 $max_new_count = 0;
 foreach (TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 	$new_counts[$row['carrier_id']] = $row['count'];
@@ -34,15 +34,21 @@ foreach (TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 }
 
 ?>
-<h1>运营商</h1>
+<h1>运营商
+<?php echo TCClickUtil::selector(array(
+		array("label"=>"最近一月", "from"=>date("Y-m-d", time()-86400*30)),
+		array("label"=>"最近两月", "from"=>date("Y-m-d", time()-86400*60)),
+		array("label"=>"最近三月", "from"=>date("Y-m-d", time()-86400*90)),
+		array("label"=>"最近一年", "from"=>date("Y-m-d", time()-86400*365)),
+))?></h1>
 <div class="block">
-  <h3>TOP 10 运营商 <span class='right'><?php echo $start_date?> ~ <?php echo $end_date?> </span></h3>
+  <h3>TOP 20 运营商 <span class='right'><?php echo $start_date?> ~ <?php echo $end_date?> </span></h3>
   <ul class="tabs">
     <li id="tab_active_carrier" class="tab current">新增用户</li> 
     <li id="tab_new_carrier" class="tab">新增用户</li> 
   </ul>
   <div class="panels">
-    <div id="panel_active_carrier" class="panel current">
+    <div id="panel_active_carrier" style='height:auto' class="panel current">
       <table>
         <thead>
           <th width="190px">运营商</th>
@@ -54,10 +60,10 @@ foreach (TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 							<div class="label"><?php printf('%.02f', $count/$all_active_count*100)?>%</div>
 							<div class="chart_area"><div style="width:<?php echo $count/$max_active_count*100?>%"></div></div>
 						</td>
-				</tr><?php $i++;if($i==10)break;endforeach;endif;?>
+				</tr><?php $i++;endforeach;endif;?>
       </table>
     </div>
-    <div id="panel_new_carrier" class="panel">
+    <div id="panel_new_carrier" style='height:auto' class="panel">
       <table>
         <thead>
           <th width="190px">运营商</th>
@@ -69,7 +75,7 @@ foreach (TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 							<div class="label"><?php printf('%.02f', $count/$all_new_count*100)?>%</div>
 							<div class="chart_area"><div style="width:<?php echo $count/$max_new_count*100?>%"></div></div>
 						</td>
-				</tr><?php $i++;if($i==10)break;endforeach;endif;?>
+				</tr><?php $i++;endforeach;endif;?>
       </table>
     </div>
   </div>

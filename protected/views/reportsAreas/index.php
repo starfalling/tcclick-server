@@ -1,6 +1,6 @@
 <?php
-$from = date('Y-m-d', time() - 30*86400);
-$to = date('Y-m-d');
+$from = $_GET['from'] ? $_GET['from'] : date('Y-m-d', time() - 30*86400);
+$to = $_GET['to'] ? $_GET['to'] : date('Y-m-d');
 
 // 所有活跃设备总和
 $sql = "select sum(count) as count from {counter_daily_active_area}
@@ -70,7 +70,13 @@ foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 
 
 ?>
-<h1>地域</h1>
+<h1>地域
+<?php echo TCClickUtil::selector(array(
+		array("label"=>"最近一月", "from"=>date("Y-m-d", time()-86400*30)),
+		array("label"=>"最近两月", "from"=>date("Y-m-d", time()-86400*60)),
+		array("label"=>"最近三月", "from"=>date("Y-m-d", time()-86400*90)),
+		array("label"=>"最近一年", "from"=>date("Y-m-d", time()-86400*365)),
+))?></h1>
 
 <div class="block">
 	<h3>TOP 10 国家分布<span class='right'><?php echo $from?> ~ <?php echo $to?></span></h3>

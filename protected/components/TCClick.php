@@ -1,11 +1,11 @@
 <?php
+include "Application.php";
 
 class TCClick{
 
 	public static function app(){
 		static $app = null;
 		if(!$app){
-			include_once "Application.php";
 			$app = new Application();
 		}
 		return $app;

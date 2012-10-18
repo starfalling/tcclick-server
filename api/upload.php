@@ -9,6 +9,7 @@ if($data_compressed){
 			values (" . time() . ", :data, :ip)";
 	TCClick::app()->db->execute($sql, array(":data"=>$data_compressed, 
 	":ip"=>IpLocationSeekerTCClick::ip2int($_SERVER['REMOTE_ADDR'])));
+	TCClick::app()->db->close();
 }
 
 

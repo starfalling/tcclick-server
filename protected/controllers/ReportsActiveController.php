@@ -14,16 +14,19 @@ class ReportsActiveController extends  Controller{
   public function actionAjaxActiveDaily(){
     header("Content-type: application/json;charset=utf-8");
     $json = array("stats" => array(), "dates" => array(), "result" => "success");
-    $start_date = date("Y-m-d", time() - 86400 * 30);
-    $end_date = date('Y-m-d', time());
-    $day_data = array(); // 每日活跃设备
-    for($i = 30; $i>=0; $i --){
-      $date = date("Y-m-d", time() - 86400 * $i);
-      $sql = "select `count` from {counter_daily_active} where date='$date' and channel_id=0";
-      $stmt = TCClick::app()->db->query($sql)->fetchColumn();
-      $day_data[] = intval($stmt);
-    }
-    $json['stats'][] = array("data" => $day_data, "name" => '活跃设备');
+		$start_date = $_GET['from'] ? $_GET['from'] : date("Y-m-d", time()-86400*30);
+		$end_date = $_GET['to'] ? $_GET['to'] : date("Y-m-d", time());
+		
+		$date_counts = ReportsController::generateZeroDailyCount($start_date, $end_date);
+		$sql = "select `date`, `count` from {counter_daily_active}
+		where  `date`>=:start and `date`<=:end and channel_id=0";
+		$stmt = TCClick::app()->db->query($sql, array(":start"=>$start_date, ":end"=>$end_date));
+		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+			$date_counts[$row['date']] = intval($row['count']);
+		}
+		$data = array();
+		foreach($date_counts as $date=>$count) $data[] = $count;
+    $json['stats'][] = array("data" => $data, "name" => '活跃设备');
     $json['dates'] = ReportsController::datesArrayForJsonOutput($start_date, $end_date);
     echo json_encode($json);
   }

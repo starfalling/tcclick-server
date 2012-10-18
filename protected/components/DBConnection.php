@@ -4,15 +4,47 @@ class DBConnection{
 	protected $db_master;
 	protected $db_slave;
 	
-	public function __construct() {
-		$options = array(PDO::ATTR_PERSISTENT, MYSQL_PERSISTENT);
-		
-		$this->db_master = new PDO(MYSQL_DSN_MASTER, MYSQL_USER_MASTER, MYSQL_PASS_MASTER, $options);
-		if(MYSQL_DSN_MASTER == MYSQL_DSN_SLAVE){
-			$this->db_slave = $this->db_master;
-		}else{
-			$this->db_slave = new PDO(MYSQL_DSN_SLAVE, MYSQL_USER_SLAVE, MYSQL_PASS_SLAVE, $options);
+	/**
+	 * connect to the master and slave database
+	 */
+	public function connect(){
+		$this->connectMaster();
+		$this->connectSlave();
+	}
+	
+	/**
+	 * connect to the master database
+	 */
+	private function connectMaster(){
+		if(!$this->db_master){
+			$options = array(PDO::ATTR_PERSISTENT, MYSQL_PERSISTENT);
+			$this->db_master = new PDO(MYSQL_DSN_MASTER, MYSQL_USER_MASTER, MYSQL_PASS_MASTER, $options);
 		}
+	}
+	
+	/**
+	 * connect to the slave database
+	 */
+	private function connectSlave(){
+		if(!$this->db_slave){
+			$options = array(PDO::ATTR_PERSISTENT, MYSQL_PERSISTENT);
+			if(MYSQL_DSN_MASTER == MYSQL_DSN_SLAVE){
+				if(!$this->db_master){
+					$this->db_master = new PDO(MYSQL_DSN_MASTER, MYSQL_USER_MASTER, MYSQL_PASS_MASTER, $options);
+				}
+				$this->db_slave = $this->db_master;
+			}else{
+				$this->db_slave = new PDO(MYSQL_DSN_SLAVE, MYSQL_USER_SLAVE, MYSQL_PASS_SLAVE, $options);
+			}
+		}
+	}
+	
+	/**
+	 * close the database connection
+	 */
+	public function close(){
+		$this->db_master = null;
+		$this->db_slave = null;
 	}
 	
 	/**
@@ -30,6 +62,7 @@ class DBConnection{
 	 * @return mixed row count affected by this sql, or false when error occured
 	 */
 	public function execute($sql, $params=null, &$errorInfo=null){
+		if(!$this->db_master) $this->connectMaster();
 		$stmt = $this->db_master->prepare($this->updateTablePrefixForSql($sql));
 		if($params && is_array($params)){
 			foreach($params as $key=>&$value){
@@ -51,6 +84,7 @@ class DBConnection{
 	 * @return PDOStatement
 	 */
 	public function query($sql, $params=null){
+		if(!$this->db_slave) $this->connectSlave();
 		$stmt = $this->db_slave->prepare($this->updateTablePrefixForSql($sql));
 		if($params && is_array($params)){
 			foreach($params as $key=>&$value){

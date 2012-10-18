@@ -4,6 +4,9 @@ class ReportsModelsController extends Controller{
 		return array("LoginRequiredFilter");
 	}
 	
+	public function actionAjaxListBlock(){
+		$this->renderPartial('ajax_block_model_list');
+	}
 	
   
   public function actionIndex(){

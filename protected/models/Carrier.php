@@ -29,7 +29,7 @@ class Carrier{
 	 * @param string $carrier
 	 */
 	public static function add($carrier){
-		$sql = "insert into {carrier} (carrier) values (:carrier)";
+		$sql = "insert ignore into {carrier} (carrier) values (:carrier)";
 		if(TCClick::app()->db->execute($sql, array(":carrier"=>$carrier))){
 			self::$all_carrier[$carrier] = TCClick::app()->db->lastInsertId();
 		}
@@ -40,6 +40,23 @@ class Carrier{
 	 */
 	public static function idFor($carrier){
 		if(!$carrier) return null;
+		$carrier = trim($carrier);
+		static $other_names = array(
+				"China Mobile Communication Corp."=>"中国移动",
+				"CHINA MOBILE" => "中国移动",
+				"China Mobile" => "中国移动",
+				"中国移动3G"     => "中国移动",
+				"China Unicom" => "中国联通",
+				"CHN-CUGSM"    => "中国联通",
+				"CHN-UNICOM"   => "中国联通",
+				"CU-GSM"       => "中国联通",
+				"China Telecom"=> "中国电信",
+				"46003"        => "中国电信",
+				"460003"       => "中国电信",
+				"Far EasTone"  => "遠傳電信",
+				"远传电信"       => "遠傳電信",
+		);
+		if ($other_names[$carrier]) $carrier = $other_names[$carrier];
 		$all_carrier = self::all();
 		if(!$all_carrier[$carrier]){
 			self::add($carrier);

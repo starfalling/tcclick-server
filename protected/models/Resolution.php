@@ -40,11 +40,18 @@ class Resolution{
 	 */
 	public static function idFor($resolution){
 		$all_resolutions = self::all();
-		if(!$all_resolutions[$resolution]){
-			self::add($resolution);
-			$all_resolutions = self::all();
+		if ($all_resolutions[$resolution]){
+			return $all_resolutions[$resolution];
+		}else{
+			$resolution_changed = preg_replace('|([0-9]+)x([0-9]+)|', '$2x$1', $resolution);
+			if ($all_resolutions[$resolution_changed]){
+				return $all_resolutions[$resolution_changed];
+			}else{
+				self::add($resolution);
+				$all_resolutions = self::all();
+				return $all_resolutions[$resolution];
+			}
 		}
-		return $all_resolutions[$resolution];
 	}
 	
 	public static function nameof($id){

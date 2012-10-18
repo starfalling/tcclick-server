@@ -55,8 +55,8 @@ for($i=1; $i<=8; $i++){
 	$retention_counts = array(0=>count($active_device_ids)); // 所有渠道的留存
 	
 	// 计算分渠道的留存情况
-	$sql = "select id, channel_id from {devices} where created_at>='{$new_date}' and created_at<='{$new_date} 23:59:59'
-	order by id";
+	$sql = "select id, channel_id from {devices} where id>={$min_device_id} and id<={$max_device_id}
+	limit " . ($max_device_id-$min_device_id+1);
 	$stmt = TCClick::app()->db->query($sql);
 	$new_counts = array();
 	while(true){
