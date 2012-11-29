@@ -1,4 +1,12 @@
-<h1>错误报告</h1>
+<h1>错误报告
+<?php
+$selector_params = array();
+$selector_params[] = array("label"=>"全部", "version"=>null);
+foreach(array_reverse(Version::all()) as $version=>$version_id){
+	$selector_params[] = array("label"=>$version, "version_id"=>$version_id);
+}
+echo TCClickUtil::selector($selector_params);
+?></h1>
 <div class="block">
 	<h3>概况</h3>
 	<div id="daily_exceptions_count_chart" class="panel">a</div>
@@ -8,9 +16,17 @@
 
 
 <script>$(function(){
+	function getURLParameter(name) {
+		return decodeURI((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]);
+	}
 	render_chart('daily_exceptions_count_chart','',root_url+'exceptions/AjaxDailyCount', {}, false,
 			{tooltip: {formatter: function() { return this.x +' 出错 '+ this.y + ' 次';}} } );
-	$("#exceptions_list_block").load(root_url+'exceptions/AjaxExceptionsListBlock');
+	var version_id = getURLParameter("version_id");
+	if(version_id){
+		$("#exceptions_list_block").load(root_url+'exceptions/AjaxExceptionsListBlock?version_id='+version_id);
+	}else{
+		$("#exceptions_list_block").load(root_url+'exceptions/AjaxExceptionsListBlock');
+	}
 
 	$(document).on("click", ".exceptions_list tr", function(){
 		if($(this).attr("id") == undefined) return;

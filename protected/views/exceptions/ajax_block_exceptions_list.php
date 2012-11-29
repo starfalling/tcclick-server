@@ -1,5 +1,12 @@
 <div class="block">
-	<h3>明细</h3>
+	<h3>明细<?php
+$selector_params = array();
+$selector_params[] = array("label"=>"全部", "version"=>null);
+foreach(array_reverse(Version::all()) as $version=>$version_id){
+	$selector_params[] = array("label"=>$version, "version_id"=>$version_id);
+}
+echo TCClickUtil::selector($selector_params);
+?></h3>
 	<table class='exceptions_list'>
 		<thead>
 			<tr>

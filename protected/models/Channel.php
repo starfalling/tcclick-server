@@ -17,7 +17,7 @@ class Channel{
 	
 	private static function reload($refreshCache=false){
 		if(!$refreshCache){
-			self::$all_channels = TCClick::app()->cache->get('tcclick_all_channels');
+			self::$all_channels = TCClick::app()->cache->get('tcclick_all_channels', false);
 		}else{
 			self::$all_channels = false;
 		}

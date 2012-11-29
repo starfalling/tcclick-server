@@ -29,16 +29,28 @@ $update_devices_count = TCClickCounter::calculateUpdateDevicesCountOn($date);
 $active_devices_count = $open_times = $open_times_with_seconds_spent = $seconds_spent = 0;
 $date_for_tablename = str_replace("-", "_", $date);
 $tablename = "daily_active_devices_{$date_for_tablename}";
-$sql = "select count(*), sum(open_times), sum(open_times_with_seconds_spent), sum(seconds_spent)
-from {{$tablename}}";
-$stmt = TCClick::app()->db->query($sql);
-$row = $stmt->fetch(PDO::FETCH_BOTH);
-if($row){
-	$active_devices_count = $row[0];
-	$open_times = $row[1];
-	$open_times_with_seconds_spent = $row[2];
-	$seconds_spent = $row[3];
+
+// 找到当天活跃设备里面的最大的设备ID号码
+$sql = "select max(device_id) from {{$tablename}}";
+$max_device_id = TCClick::app()->db->query($sql)->fetchColumn(0);
+
+$rows_per_fetch = 50000; // 每次获取5万，因为SAE不允许对超过20万行数据执行查询操作
+$from = 0; $to = $rows_per_fetch;
+while(true){
+	$sql = "select count(*), sum(open_times), sum(open_times_with_seconds_spent), sum(seconds_spent)
+	from {{$tablename}} where device_id>{$from} and device_id<={$to}";
+	$row = TCClick::app()->db->query($sql)->fetch(PDO::FETCH_BOTH);
+	if($row){
+		$active_devices_count += $row[0];
+		$open_times += $row[1];
+		$open_times_with_seconds_spent += $row[2];
+		$seconds_spent += $row[3];
+	}
+	$from += $rows_per_fetch;
+	$to += $rows_per_fetch;
+	if($from > $max_device_id) break;
 }
+
 
 $sql = "insert into {counter_daily}
 (`date`, new_devices_count, all_devices_count, active_devices_count, update_devices_count,

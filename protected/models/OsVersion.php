@@ -14,33 +14,41 @@ class OsVersion{
 		return self::$all_versions;
 	}
 	
-	private static function reload(){
-		self::$all_versions = array();
-		$sql = "select * from {os_versions}";
-		$stmt = TCClick::app()->db->query($sql);
-		while(true){
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			if(!$row) break;
-			self::$all_versions[$row['version']] = $row['id'];
+	private static function reload($refreshCache=false){
+		if(!$refreshCache){
+			self::$all_versions = TCClick::app()->cache->get('tcclick_all_os_versions', false);
+		}else{
+			self::$all_versions = false;
 		}
+		if(self::$all_versions === false){
+			self::$all_versions = array();
+			$sql = "select * from {os_versions}";
+			$stmt = TCClick::app()->db->query($sql);
+			while(true){
+				$row = $stmt->fetch(PDO::FETCH_ASSOC);
+				if(!$row) break;
+				self::$all_versions[$row['version']] = $row['id'];
+			}
+			TCClick::app()->cache->set('tcclick_all_os_versions', self::$all_versions);
+		}
+		return self::$all_versions;
 	}
+	
 	/**
-	 * add a channel to database by name
+	 * add a version to database by name
 	 * @param string $version
 	 */
 	public static function add($version){
-		$sql = "insert into {os_versions} (version) values (:version)";
-		if(TCClick::app()->db->execute($sql, array(":version"=>$version))){
-			self::$all_versions[$version] = TCClick::app()->db->lastInsertId();
-		}
+		$sql = "insert ignore into {os_versions} (version) values (:version)";
+		TCClick::app()->db->execute($sql, array(":version"=>$version));
+		self::reload(true);
 	}
 	
+	/**
+	 * query unique id of the version in database, create one if not exist 
+	 * @param string $version
+	 */
 	public static function idFor($version){
-		if(preg_match('|^[0-9\\.]+|', $version, $matches)){
-			// 把 1.5.1.13-RT-20120509.203629 这种奇怪格式的版本号信息中的版本号前面部分提取出来
-			$version = $matches[0];
-		}
-		if(empty($version)) return null;
 		$all_versions = self::all();
 		if(!$all_versions[$version]){
 			self::add($version);
@@ -48,12 +56,16 @@ class OsVersion{
 		}
 		return $all_versions[$version];
 	}
+	
 	/**
-	 * @return string $osVersion
+	 * query version name by chanel id
+	 * @param integer $id
+	 * @return string
 	 */
-	public static function nameof($id){
-	  foreach (self::all() as $name=>$version_id){
-	    if($version_id == $id) return  $name;
-	  }
+	public static function nameOf($id){
+		foreach(self::all() as $name=>$version_id){
+			if($version_id == $id) return $name;
+		}
 	}
 }
+

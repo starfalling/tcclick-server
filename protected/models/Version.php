@@ -16,7 +16,7 @@ class Version{
 	
 	private static function reload($refreshCache=false){
 		if(!$refreshCache){
-			self::$all_versions = TCClick::app()->cache->get('tcclick_all_versions');
+			self::$all_versions = TCClick::app()->cache->get('tcclick_all_versions', false);
 		}else{
 			self::$all_versions = false;
 		}

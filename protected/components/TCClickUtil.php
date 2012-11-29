@@ -153,9 +153,10 @@ class TCClickUtil{
 				$v_encoded = urlencode($v);
 				if($need_check_param_already_exists){
 					$url = preg_replace("/\\?{$k_encoded}=[^&]+/", '?', $url);
-					$url = preg_replace("/&{$k_encoded}=[^&]+/", '?', $url);
+					$url = preg_replace("/&{$k_encoded}=[^&]+/", '', $url);
 				}
 				if($v === false) continue;
+				if($v === null) continue;
 				$url .= "&{$k_encoded}={$v_encoded}";
 			}
 		}

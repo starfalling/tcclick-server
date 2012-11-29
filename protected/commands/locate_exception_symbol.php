@@ -37,7 +37,7 @@ function locate_exception($id, $version){
 	$origin_content = $json->content;
 	$app_name = $app_names[$version];
 	$new_content = $origin_content;
-	$reg = "|{$app_name}( *)(0x[0-9a-z]{8}) {$app_name} \\+ [0-9]+|";
+	$reg = "/{$app_name}( *)(0x[0-9a-z]{8}) ({$app_name}|0x0) \\+ [0-9]+/";
 	if(preg_match_all($reg, $origin_content, $matches)){
 		foreach($matches[2] as $i=>$address){
 			$command = "atos -o '{$dysm_files[$version]}' -arch armv7 $address";

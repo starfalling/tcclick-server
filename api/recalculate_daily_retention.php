@@ -27,12 +27,12 @@ $active_device_ids_str = null;
 for($i=1; $i<=8; $i++){
 	$new_date = date("Y-m-d", $time-86400*$i); // 计算这一天的新用户在 $date 时候的留存用户数
 	$sql = "select id from {devices} where created_at>='{$new_date}' and created_at<='{$new_date} 23:59:59'
-	order by id limit 1";
+	order by created_at limit 1";
 	$min_device_id = TCClick::app()->db->query($sql)->fetchColumn();
 // 	echo 'min_device_id:', $min_device_id, "\n";
 	if (!$min_device_id) continue; // 没有新增用户
 	$sql = "select id from {devices} where created_at>='{$new_date}' and created_at<='{$new_date} 23:59:59'
-	order by id desc limit 1";
+	order by created_at desc limit 1";
 	$max_device_id = TCClick::app()->db->query($sql)->fetchColumn();
 // 	echo 'max_device_id:', $max_device_id, "\n";
 	
