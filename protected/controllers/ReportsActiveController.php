@@ -67,13 +67,13 @@ class ReportsActiveController extends  Controller{
     		$y = $year-1;
     		$m = 12+$month-$i;
     		$monthly_dates[] = sprintf("%d年%d月", $y, $m);
-    		$date = sprintf("%d-%02d", $y, $m);
+    		$date = sprintf("%d-%02d-01", $y, $m);
     	}else{
     		$y = $year; $m = $month-$i;
     		$monthly_dates[] = sprintf("%d年%d月", $y, $m);
-    		$date = sprintf("%d-%02d", $y, $m);
+    		$date = sprintf("%d-%02d-01", $y, $m);
     	}
-    	$monthly_device_counts[] = $this->monthlyActiveCount($date);
+    	$monthly_device_counts[] = $this->calculateMonthlyActiveCount($date);
     }
     $json['stats'][] = array("data"=>$monthly_device_counts, "name"=>'月活跃设备', "visible"=>true);
     $json['dates'] = $monthly_dates;
@@ -105,19 +105,35 @@ class ReportsActiveController extends  Controller{
   
   //月活跃率
   public function actionAjaxActiveMonthRate(){
-    header("Content-type: application/json; chartset = utf-8");
-    $json = array("stats" => array(), "dates" => array(), "result" => "success");
-    $month = date("Y-m", time());
-    $sql = "select id  from {devices} where created_at< '{$month}-01 00:00:00' ORDER BY ID  DESC LIMIT 1 ";
-    $device_count = TCClick::app()->db->query($sql)->fetchColumn();
-    $monthly_active_devices_count = self::monthActiveCount();
-    $month_active_rate = round($monthly_active_devices_count / $device_count, 2)*100;
-    $json['stats'][] = array("data" => array($month_active_rate), "name" => "上月活跃率", "visoble" => true);
-    $json['dates'] = array(date("m", strtotime("-1 month",time())) . "-01");
+    header("Content-type: application/json;chartset=utf-8");
+    $json = array("result" => "success");
+    
+    $monthly_dates = array();
+    $monthly_active_rates = array();
+    $year = date("Y"); $month = date("m");
+    for($i=12; $i>=0; $i--){
+    	if($month<=$i){
+    		$y = $year-1;
+    		$m = 12+$month-$i;
+    		$monthly_dates[] = sprintf("%d年%d月", $y, $m);
+    		$date = sprintf("%d-%02d-01", $y, $m);
+    	}else{
+    		$y = $year; $m = $month-$i;
+    		$monthly_dates[] = sprintf("%d年%d月", $y, $m);
+    		$date = sprintf("%d-%02d-01", $y, $m);
+    	}
+    	$monthly_active_rates[] = $this->calculateMonthlyActiveRate($date);
+    }
+    $json['stats'][] = array("data"=>$monthly_active_rates, "name"=>'月活跃率', "visible"=>true);
+    $json['dates'] = $monthly_dates;
     echo json_encode($json);
   }
+	
+	
+	
+	
   
-  protected  static  function monthlyActiveCount($month_start_date){
+  private  function calculateMonthlyActiveCount($month_start_date){
   	// 查下看计数器里面有没有
   	$sql = "select `count` from {counter_monthly_active} where channel_id=0 and date='{$month_start_date}'";
   	$stmt = TCClick::app()->db->query($sql);
@@ -125,10 +141,28 @@ class ReportsActiveController extends  Controller{
   		return intval($row['count']);
   	}
   	
-    $table_name = str_replace("-", "_", "{monthly_active_devices_{$month_start_date}}");
+		$table_name = '{monthly_active_devices_' . date('Y_m', strtotime($month_start_date)) . '}';
     $sql = "select count(*) from $table_name";
     return intval(TCClick::app()->db->query($sql)->fetchColumn());
   }
+	
+	private function calculateMonthlyActiveRate($month_start_date){
+		$active_count = $this->calculateMonthlyActiveCount($month_start_date);
+		$all_devices_count = 0;
+		$rate = 0;
+		$month_end_date = date("Y-m-d", strtotime("+1 month", strtotime($month_start_date)) - 86400);
+		$today = date("Y-m-d");
+		if($week_end_date > $today){ // 今天所在的这一个月，直接取当前总激活设备数
+			$sql = 'select count(*) from {devices}';
+			$all_devices_count = TCClick::app()->db->query($sql)->fetchColumn(); 
+		}else{
+			$sql = "select all_devices_count from {counter_daily} where date='{$month_end_date}'";
+			$all_devices_count = intval(TCClick::app()->db->query($sql)->fetchColumn());
+		}
+		if($all_devices_count) $rate = $active_count / $all_devices_count;
+		if($rate > 1) $rate = 1;
+		return $rate;
+	}
   
   private function calculateWeeklyActiveCount($week_start_date){
   	// 查下看计数器里面有没有

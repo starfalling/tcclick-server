@@ -52,7 +52,8 @@ $(function(){
 	$("#tab_active_month_rate").click(function(){
 		  $("#panel_active_month_rate").show();
 		  render_chart('panel_active_month_rate', '', root_url+'reportsActive/AjaxActiveMonthRate', {}, false, 
-				  {tooltip:{formatter:function(){return '全部设备 '+this.x+ ' : ' + this.y+ '%'}}});
+				  {tooltip:{formatter:function(){return '月活跃率 '+this.x+ ' : ' + Math.round(this.y*10000)/100 + '%'}},
+				xAxis: {labels:{ setp: 2, rotation: -35, align: "right"}}});
 		});
 });
 
