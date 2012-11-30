@@ -47,7 +47,7 @@ class ReportsActiveController extends  Controller{
     	$date = date("Y-m-d", $time);
     	$weekly_dates[] = date("m-d", $time);
 
-    	$weekly_device_counts[] = $this->weeklyActiveCount($date);
+    	$weekly_device_counts[] = $this->calculateWeeklyActiveCount($date);
     }
     $json['stats'][] = array("data"=>$weekly_device_counts, "name"=>'周活跃设备', "visible"=>true);
     $json['dates'] = $weekly_dates;
@@ -82,24 +82,24 @@ class ReportsActiveController extends  Controller{
   
   //周活跃设备率
   public function actionAjaxActiveWeekRate(){
-    header("Content-type: application/json; chartset = utf-8");
-    $json = array("stats" => array(), "dates" => array(), "result" => "success");
+    header("Content-type: application/json;chartset=utf-8");
+    $json = array("result" => "success");
+    $w = date("w");
+    $w = $w==0 ? 7 : $w; // 今天是一周当中的周几，取值 1-7
+    $time_of_today_start = strtotime(date("Y-m-d"));
+    $time_of_week_start_of_today = $time_of_today_start - ($w-1) * 86400;
+    
     $weekly_dates = array();
-    for($i = 30; $i > 0; $i --){
-      if(date("w", time() - 86400 * $i) == 1){
-        $dates[] = date('m-d',time() - 86400 * $i);
-        $weekly_dates[] =  time() - 86400 * $i;
-      }
+    $weekly_active_rates = array();
+    for($i=10; $i>=0; $i--){
+    	$time = $time_of_week_start_of_today - $i*86400*7;
+    	$date = date("Y-m-d", $time);
+    	$weekly_dates[] = date("m-d", $time);
+
+    	$weekly_active_rates[] = $this->calculateWeeklyActiveRate($date);
     }
-    foreach($weekly_dates as $week_time){
-      $week = date('Y-m-d' , strtotime("1 week",$week_time));
-      $sql = "select id from {devices} where created_at < '$week 00:00:00' ORDER BY  id DESC LIMIT 1";
-      $device_count = TCClick::app()->db->query($sql)->fetchColumn(); // 上一个周的所有的设备
-      $weekly_device_count = self::weeklyActiveCount($week_time);
-      $weekly_device_rate[] = round($weekly_device_count / $device_count, 2) *100;
-    }
-    $json['stats'][] = array("data" => $weekly_device_rate, "name" => "上周活跃率", "visible" => true);
-    $json['dates'] = $dates;
+    $json['stats'][] = array("data"=>$weekly_active_rates, "name"=>'周活跃率', "visible"=>true);
+    $json['dates'] = $weekly_dates;
     echo json_encode($json);
   }
   
@@ -130,7 +130,7 @@ class ReportsActiveController extends  Controller{
     return intval(TCClick::app()->db->query($sql)->fetchColumn());
   }
   
-  public function weeklyActiveCount($week_start_date){
+  private function calculateWeeklyActiveCount($week_start_date){
   	// 查下看计数器里面有没有
   	$sql = "select `count` from {counter_weekly_active} where channel_id=0 and date='{$week_start_date}'";
   	$stmt = TCClick::app()->db->query($sql);
@@ -142,4 +142,22 @@ class ReportsActiveController extends  Controller{
     $sql = "select count(*) from $table_name";
     return intval(TCClick::app()->db->query($sql)->fetchColumn());
   }
+	
+	private function calculateWeeklyActiveRate($week_start_date){
+		$active_count = $this->calculateWeeklyActiveCount($week_start_date);
+		$all_devices_count = 0;
+		$rate = 0;
+		$week_end_date = date("Y-m-d", strtotime($week_start_date) + 86400*7);
+		$today = date("Y-m-d");
+		if($week_end_date > $today){ // 今天所在的这一周，直接取当前总激活设备数
+			$sql = 'select count(*) from {devices}';
+			$all_devices_count = TCClick::app()->db->query($sql)->fetchColumn(); 
+		}else{
+			$sql = "select all_devices_count from {counter_daily} where date='{$week_end_date}'";
+			$all_devices_count = intval(TCClick::app()->db->query($sql)->fetchColumn());
+		}
+		if($all_devices_count) $rate = $active_count / $all_devices_count;
+		if($rate > 1) $rate = 1;
+		return $rate;
+	}
 }

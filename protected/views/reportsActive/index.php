@@ -46,7 +46,7 @@ $(function(){
 	$("#tab_active_week_rate") .click(function(){
 		  $("#panel_active_week_rate").show();
 		  render_chart('panel_active_week_rate', '', root_url+'reportsActive/AjaxActiveWeekRate', {}, false, 
-				  {tooltip:{formatter:function(){return '全部设备  '+this.x + ' : ' +this.y+ '%'}}});
+				  {tooltip:{formatter:function(){return '周活跃率  '+this.x + ' : ' +Math.round(this.y*10000)/100+ '%'}}});
 		});
 	//上个月的活跃率
 	$("#tab_active_month_rate").click(function(){
