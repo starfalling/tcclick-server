@@ -7,6 +7,14 @@ class Model{
 	 * @param string $model
 	 */
 	public static function idFor($brand, $model){
+		// try to load cached model id from memcache
+		$cache_key = "tcclick_cached_device_models";
+		$cached_models = TCClick::app()->cache->get($cache_key);
+		if($cached_models){
+			$model_name = $brand . '::' . $model;
+			if($cached_models[$model_name]) return $cached_models[$model_name];
+		}
+		
 		$sql = 'select id from {models} where brand=:brand and model=:model';
 		$row = TCClick::app()->db->query($sql, array(
 				':brand' => $brand,

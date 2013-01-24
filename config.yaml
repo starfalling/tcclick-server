@@ -31,3 +31,7 @@ cron:
   - description: 计算日留存
   url: api/recalculate_daily_retention.php?date=yesterday
   schedule: 0 3 * * *
+  
+  - description: 缓存常见的设备型号，以降低数据库访问频率
+  url: api/cache_common_models.php
+  schedule: 0 3 * * *
