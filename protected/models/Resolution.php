@@ -39,18 +39,31 @@ class Resolution{
 	 * @param string $resolution
 	 */
 	public static function idFor($resolution){
+		$resolution_changed = preg_replace('|([0-9]+)x([0-9]+)|', '$2x$1', $resolution);
+		
+		// try to load cached resolution id from memcache
+		static $cached_resolutions = null;
+		if(!$cached_resolutions){
+			$cache_key = "tcclick_cached_device_resolutions";
+			$cached_resolutions = TCClick::app()->cache->get($cache_key);
+		}
+		if($cached_resolutions){
+			if($cached_resolutions[$resolution]){
+				return $cached_resolutions[$resolution];
+			}elseif($cached_resolutions[$resolution_changed]){
+				return $cached_resolutions[$resolution_changed];
+			}
+		}
+		
 		$all_resolutions = self::all();
 		if ($all_resolutions[$resolution]){
 			return $all_resolutions[$resolution];
+		}elseif ($all_resolutions[$resolution_changed]){
+			return $all_resolutions[$resolution_changed];
 		}else{
-			$resolution_changed = preg_replace('|([0-9]+)x([0-9]+)|', '$2x$1', $resolution);
-			if ($all_resolutions[$resolution_changed]){
-				return $all_resolutions[$resolution_changed];
-			}else{
-				self::add($resolution);
-				$all_resolutions = self::all();
-				return $all_resolutions[$resolution];
-			}
+			self::add($resolution);
+			$all_resolutions = self::all();
+			return $all_resolutions[$resolution];
 		}
 	}
 	

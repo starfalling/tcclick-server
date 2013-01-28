@@ -33,5 +33,5 @@ cron:
   schedule: 0 3 * * *
   
   - description: 缓存常见的设备型号，以降低数据库访问频率
-  url: api/cache_common_models.php
+  url: api/cache_common_data_for_analyze.php
   schedule: 0 3 * * *

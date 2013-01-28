@@ -1,38 +1,48 @@
 <?php
 
 class Carrier{
-	private static $all_carrier = null;
+	private static $all_carriers = null;
 	
 	/**
-	 * get all the carrier from databases
+	 * get all the carriers from databases
 	 * @return array associated array, key is the carrier name and value is the carrier id
 	 */
 	public static function all(){
-		if(self::$all_carrier === null){
+		if(self::$all_carriers === null){
 			self::reload();
 		}
-		return self::$all_carrier;
+		return self::$all_carriers;
 	}
 	
-	private static function reload(){
-		self::$all_carrier = array();
-		$sql = "select * from {carrier}";
-		$stmt = TCClick::app()->db->query($sql);
-		while(true){
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			if(!$row) break;
-			self::$all_carrier[$row['carrier']] = $row['id'];
+	
+	private static function reload($refreshCache=false){
+		if(!$refreshCache){
+			self::$all_carriers = TCClick::app()->cache->get('tcclick_all_carriers', false);
+		}else{
+			self::$all_carriers = false;
 		}
+		if(self::$all_carriers === false){
+			self::$all_carriers = array();
+			$sql = "select * from {carriers}";
+			$stmt = TCClick::app()->db->query($sql);
+			while(true){
+				$row = $stmt->fetch(PDO::FETCH_ASSOC);
+				if(!$row) break;
+				self::$all_carriers[$row['carrier']] = $row['id'];
+			}
+			TCClick::app()->cache->set('tcclick_all_carriers', self::$all_carriers);
+		}
+		return self::$all_carriers;
 	}
+	
 	/**
 	 * add a carrier to database by name
 	 * @param string $carrier
 	 */
 	public static function add($carrier){
 		$sql = "insert ignore into {carrier} (carrier) values (:carrier)";
-		if(TCClick::app()->db->execute($sql, array(":carrier"=>$carrier))){
-			self::$all_carrier[$carrier] = TCClick::app()->db->lastInsertId();
-		}
+		TCClick::app()->db->execute($sql, array(":carrier"=>$carrier));
+		self::reload(true);
 	}
 	
 	/**

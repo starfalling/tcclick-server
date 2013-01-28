@@ -23,7 +23,6 @@ class AnalyzeListenerActiveDevice implements IAnalyzeListener{
 				// 确定这台设备哪些个小时是活跃的
 				for($time=$activity->start_at; $time<=$activity->end_at; $time+=3600){
 					$active_hours[date('Y-m-d.H', $time)] = true;
-					$active_dates[date('Y-m-d', $time)] = true;
 				}
 			}
 		}
@@ -57,6 +56,9 @@ class AnalyzeListenerActiveDevice implements IAnalyzeListener{
 				on duplicate key update `count`=`count`+1";
 				TCClick::app()->db->execute($sql, array(":channel_id"=>Channel::CHANNEL_ID_ALL));
 				TCClick::app()->db->execute($sql, array(":channel_id"=>$channel_id));
+				
+				// 这台设备这个小时所在的日期也是活跃的
+				$active_dates[$date] = true;
 			}
 		}
 		

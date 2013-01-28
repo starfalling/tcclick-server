@@ -8,8 +8,11 @@ class Model{
 	 */
 	public static function idFor($brand, $model){
 		// try to load cached model id from memcache
-		$cache_key = "tcclick_cached_device_models";
-		$cached_models = TCClick::app()->cache->get($cache_key);
+		static $cached_models = null;
+		if(!$cached_models){
+			$cache_key = "tcclick_cached_device_models";
+			$cached_models = TCClick::app()->cache->get($cache_key);
+		}
 		if($cached_models){
 			$model_name = $brand . '::' . $model;
 			if($cached_models[$model_name]) return $cached_models[$model_name];

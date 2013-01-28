@@ -2,6 +2,7 @@
 
 define("IS_ANDROID", 1);
 define("TCCLICK_DEBUG", 1);
+define("TCCLICK_DEBUG_SQL_STATISTICS", 1); // 是否对sql执行情况进行统计
 
 if(defined('SAE_TMP_PATH')) include 'config_sae.php';
 

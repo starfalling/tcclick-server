@@ -96,6 +96,14 @@ class DBConnection{
 	}
 	
 	private function updateTablePrefixForSql($sql){
+		if(TCCLICK_DEBUG_SQL_STATISTICS){
+			if(preg_match_all("/{([_a-zA-Z0-9]+)}/", $sql, $matches)){
+				foreach($matches[1] as $tablename){
+					$cache_key = "sql:statistics:$tablename";
+					TCClick::app()->cache->incr($cache_key, 1, true);
+				}
+			}
+		}
 		return preg_replace("/{([_a-zA-Z0-9]+)}/", MYSQL_TABLE_PREFIX . "$1", $sql);
 	}
 }

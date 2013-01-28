@@ -59,6 +59,13 @@ class Analyzer{
 	}
 
 	public function analyze(){
+		if(TCCLICK_DEBUG_SQL_STATISTICS){
+			$cache_key = "sql:statistics:analyze:times";
+			TCClick::app()->cache->incr($cache_key, 1, true);
+			$cache_key = "sql:statistics:analyze:times:2";
+			TCClick::app()->cache->incr($cache_key, 1, true);
+		}
+		
 		if(!$this->json) return;
 		$this->client_timeoffset = $this->server_timestamp - $this->json->timestamp;
 		$activities = $this->json->data->activities; // 修正时间偏移
