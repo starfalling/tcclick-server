@@ -1,7 +1,7 @@
 <?php
 class ReportsOsVersionController extends Controller{
 	public function filters(){
-		return array("LoginRequiredFilter");
+		return array("AdminRequiredFilter");
 	}
 	
 	

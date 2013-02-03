@@ -1,7 +1,7 @@
 <?php
 class ReportsRetentionController extends Controller{
 	public function filters(){
-		return array("LoginRequiredFilter");
+		return array("AdminRequiredFilter");
 	}
 	
 	public function actionIndex(){

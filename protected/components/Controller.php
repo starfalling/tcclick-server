@@ -58,5 +58,9 @@ class Controller{
 		$content = $this->renderPartial($view, $params, true);
 		$this->renderPartial('/layouts/' . $this->layout, array("content"=>$content), $return);
 	}
+	
+	protected function isPost(){
+		return $_SERVER['REQUEST_METHOD'] == 'POST';
+	}
 }
 

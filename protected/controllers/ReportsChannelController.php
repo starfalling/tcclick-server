@@ -15,8 +15,17 @@ class ReportsChannelController extends Controller{
 		header("Content-type: application/json;charset=utf-8");
 		$json = array("stats"=>array(), "dates"=>ReportsController::$all_hours, "result"=>"success");
 		$date = $_GET['date'] ? $_GET['date'] : date("Y-m-d");
-		$sql = "select * from {counter_hourly_new} where date=:date and channel_id<>0
-		order by count desc";
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql = "select * from {counter_hourly_new} where date=:date and channel_id<>0
+			order by count desc";
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql = "select * from {counter_hourly_new} where date=:date and channel_id in (".join(',', $channel_ids).")
+				order by count desc";
+			}
+		}
 		$stmt = TCClick::app()->db->query($sql, array(":date"=>$date));
 		$hourly_counts = array();
 		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
@@ -40,8 +49,17 @@ class ReportsChannelController extends Controller{
 		header("Content-type: application/json;charset=utf-8");
 		$json = array("stats"=>array(), "dates"=>ReportsController::$all_hours, "result"=>"success");
 		$date = $_GET['date'] ? $_GET['date'] : date("Y-m-d");
-		$sql = "select * from {counter_hourly_active} where date=:date and channel_id<>0
-		order by count desc";
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql = "select * from {counter_hourly_active} where date=:date and channel_id<>0
+			order by count desc";
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql = "select * from {counter_hourly_active} where date=:date and channel_id in (".join(',', $channel_ids).")
+				order by count desc";
+			}
+		}
 		$stmt = TCClick::app()->db->query($sql, array(":date"=>$date));
 		$hourly_counts = array();
 		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
@@ -67,8 +85,18 @@ class ReportsChannelController extends Controller{
 		$end_date = $_GET['to'] ? $_GET['to'] : date("Y-m-d", time());
 		$json = array("stats"=>array(), "result"=>"success");
 		$daily_count_with_dates = array();
-		$sql = "select `date`, `count`, channel_id from {counter_daily_new}
-		where `date`>=:start and `date`<=:end and channel_id<>0 order by count desc";
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql = "select `date`, `count`, channel_id from {counter_daily_new}
+			where `date`>=:start and `date`<=:end and channel_id<>0 order by count desc";
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql = "select `date`, `count`, channel_id from {counter_daily_new}
+				where `date`>=:start and `date`<=:end and channel_id in (".join(',', $channel_ids).") 
+				order by count desc";
+			}
+		}
 		$stmt = TCClick::app()->db->query($sql, array(":start"=>$start_date, ":end"=>$end_date));
 		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 			if(!$daily_count_with_dates[$row['channel_id']]){
@@ -91,8 +119,18 @@ class ReportsChannelController extends Controller{
 		$end_date = $_GET['to'] ? $_GET['to'] : date("Y-m-d", time());
 		$json = array("stats"=>array(), "result"=>"success");
 		$daily_count_with_dates = array();
-		$sql = "select `date`, `count`, channel_id from {counter_daily_active}
-		where `date`>=:start and `date`<=:end and channel_id<>0 order by count desc";
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql = "select `date`, `count`, channel_id from {counter_daily_active}
+			where `date`>=:start and `date`<=:end and channel_id<>0 order by count desc";
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql = "select `date`, `count`, channel_id from {counter_daily_active}
+				where `date`>=:start and `date`<=:end and channel_id in (".join(',', $channel_ids).")
+				order by count desc";
+			}
+		}
 		$stmt = TCClick::app()->db->query($sql, array(":start"=>$start_date, ":end"=>$end_date));
 		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 			if(!$daily_count_with_dates[$row['channel_id']]){

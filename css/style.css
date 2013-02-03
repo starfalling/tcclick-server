@@ -130,3 +130,7 @@ width:100%;border:1px solid #d1daef;border-bottom:none;border-top:none;height:0;
 .selector ul, .selector li{margin:0;padding:0;list-style:none;}
 .selector li.selected a{background-image:url(../images/select_btn.png);background-repeat:no-repeat;
 background-position:left -88px;}
+
+/** 账号管理界面 */
+td span.banned{color:red;}
+td span.normal{color:#006400;}

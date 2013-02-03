@@ -91,10 +91,15 @@ class Application{
 				$segments = explode("-", $item);
 				// 这些action不需要执行这个filter
 				if(count($segments) == 2){
+					$need_execute = true;
 					foreach (explode(",", $segments[1]) as $excluded_action_name){
 						$excluded_action_name = ucfirst(trim($excluded_action_name));
-						if($excluded_action_name == $action) return true;
+						if($excluded_action_name == $action){
+							$need_execute = false;
+							break;
+						}
 					}
+					if(!$need_execute) continue;
 				}
 				$class = ucfirst(trim($segments[0]));
 			}elseif(strpos($item, '+')){
@@ -109,7 +114,7 @@ class Application{
 							break;
 						}
 					}
-					if (!$need_execute) return true;
+					if (!$need_execute) continue;
 				}
 				$class = ucfirst(trim($segments[0]));
 			}else $class = ucfirst($item);

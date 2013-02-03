@@ -385,3 +385,13 @@ create table tcclick_access_tokens(
 	`expire_at` datetime,
 	`user_id` integer unsigned
 );
+
+
+drop table if exists tcclick_user_channels;
+create table tcclick_user_channels( -- 用户可以查看哪些渠道的数据
+	`user_id` integer unsigned not null,
+	`channel_id` smallint unsigned not null,
+	primary key (user_id, channel_id)
+);
+create index channel_id on tcclick_counter_daily_new(channel_id);
+

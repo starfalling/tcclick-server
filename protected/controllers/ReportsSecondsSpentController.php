@@ -3,7 +3,7 @@
 include_once "ReportsController.php";
 class ReportsSecondsSpentController extends Controller{
 	public function filters(){
-		return array("LoginRequiredFilter");
+		return array("AdminRequiredFilter");
 	}
 	
 	

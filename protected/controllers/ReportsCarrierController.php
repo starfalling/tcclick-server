@@ -1,7 +1,7 @@
 <?php
 class ReportsCarrierController extends Controller{
 	public function filters(){
-		return array("LoginRequiredFilter");
+		return array("AdminRequiredFilter");
 	}
 	
 	

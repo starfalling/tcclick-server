@@ -1,16 +1,44 @@
-<?php 
+<?php
 $today = date("Y-m-d");
 $yesterday = date("Y-m-d", time()-86400);
-$sql = "select * from {counter_daily} where date='{$yesterday}'";
-$stmt = TCClick::app()->db->query($sql);
-$yesterday_row = array("new_devices_count"=>0, "all_devices_count"=>0, "seconds_per_open"=>0,
+$yesterday_row = array("new_devices_count"=>0, "seconds_per_open"=>0,
 		"active_devices_count"=>0, "open_times"=>0, "update_devices_count"=>0);
-foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
-	$yesterday_row = $row;
-	$yesterday_row['seconds_per_open'] = 0;
-	if($row['open_times_with_seconds_spent'] > 0){
-		$yesterday_row['seconds_per_open'] = $row['seconds_spent'] / $row['open_times_with_seconds_spent'];
-	}
+$today_row = array("new_devices_count"=>0, "seconds_per_open"=>0,
+		"active_devices_count"=>0, "open_times"=>0, "update_devices_count"=>0);
+$data = array($yesterday=>&$yesterday_row, $today=>&$today_row);
+$all_devices_count = 0;
+
+$user = User::current();
+$channel_ids = $user->getChannelIds();
+$channel_condition = "0";
+if($user->isAdmin()){ 
+	$channel_condition = "1";
+	$today_row['seconds_per_open'] = TCClickCounter::calculateSecondsSpentPerOpen($today);
+	$yesterday_row['seconds_per_open'] = TCClickCounter::calculateSecondsSpentPerOpen($yesterday);
+	$sql = 'select count(*) from {devices}';
+	$all_devices_count = TCClick::app()->db->query($sql)->fetchColumn();
+}elseif($channel_ids){
+	$channel_condition = ' channel_id in (' . join(',', $channel_ids) . ')';
+	$sql = "select sum(count) from {counter_daily_new} where $channel_condition";
+	$all_devices_count = TCClick::app()->db->query($sql)->fetchColumn();
+}
+
+$sql = "select date, sum(count) as c from {counter_daily_new} where $channel_condition
+and date in ('{$yesterday}', '{$today}') group by date"; // 日新增
+foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
+	$data[$row['date']]['new_devices_count'] = $row['c'];
+}
+
+$sql = "select date, sum(count) as c from {counter_daily_active} where $channel_condition
+and date in ('{$yesterday}', '{$today}') group by date"; // 日活跃
+foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
+	$data[$row['date']]['active_devices_count'] = $row['c'];
+}
+
+$sql = "select date, sum(count) as c from {counter_daily_update} where $channel_condition
+and date in ('{$yesterday}', '{$today}') group by date"; // 日升级
+foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
+	$data[$row['date']]['update_devices_count'] = $row['c'];
 }
 ?><div class="summary">
 	<div class="pro_block">
@@ -22,7 +50,7 @@ foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 		</div>
 		<div>
 			<span class="date">今日</span>
-			<span class="number"><?php echo TCClickCounter::calculateActiveDevicesCountOn($today)?></span>
+			<span class="number"><?php echo $today_row['active_devices_count']?></span>
 		</div>
 	</div>
 	<div class="pro_block">
@@ -34,7 +62,7 @@ foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 		</div>
 		<div>
 			<span class="date">今日</span>
-			<span class="number"><?php echo TCClickCounter::calculateNewDevicesCountOn($today)?></span>
+			<span class="number"><?php echo $today_row['new_devices_count']?></span>
 		</div>
 	</div>
 	<div class="pro_block">
@@ -46,7 +74,7 @@ foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 		</div>
 		<div>
 			<span class="date">今日</span>
-			<span class="number"><?php echo TCClickCounter::calculateUpdateDevicesCountOn($today)?></span>
+			<span class="number"><?php echo $today_row['update_devices_count']?></span>
 		</div>
 	</div>
 	<div class="pro_block">
@@ -58,17 +86,14 @@ foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 		</div>
 		<div>
 			<span class="date">今日</span>
-			<span class="number"><?php echo TCClickUtil::formatSecondsSpent(TCClickCounter::calculateSecondsSpentPerOpen($today))?></span>
+			<span class="number"><?php echo TCClickUtil::formatSecondsSpent($today_row['seconds_per_open'])?></span>
 		</div>
 	</div>
 	<div class="pro_block">
 		<h3 class="title">总设备数</h3>
 		<hr size="1" />
 		<div class='all_devices_count'>
-			<span class="number"><?php
-				$sql = 'select count(*) from {devices}';
-				echo TCClick::app()->db->query($sql)->fetchColumn(); 
-			?></span>
+			<span class="number"><?php echo $all_devices_count?></span>
 		</div>
 	</div>
 </div>
@@ -80,12 +105,16 @@ foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 	<ul class="tabs">
 		<li id="tab_hourly_new_devices" class="tab current">新增设备</li>
 		<li id="tab_hourly_active_devices" class="tab">活跃设备</li>
-		<li id="tab_hourly_open_times" class="tab">启动次数</li>
+		<?php if($user->isAdmin()):?>
+			<li id="tab_hourly_open_times" class="tab">启动次数</li>
+		<?php endif?>
 	</ul>
 	<div class="panels">
 		<div id="panel_hourly_new_devices" class="panel current">a</div>
 		<div id="panel_hourly_active_devices" class="panel">b</div>
-		<div id="panel_hourly_open_times" class="panel">c</div>
+		<?php if($user->isAdmin()):?>
+			<div id="panel_hourly_open_times" class="panel">c</div>
+		<?php endif?>
 	</div>
 </div>
 
@@ -96,20 +125,26 @@ foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 		<li id="" class="tab current">新增设备</li>
 		<li id="tab_daily_all_devices" class="tab">累计设备</li>
 		<li id="tab_daily_active_devices" class="tab">活跃设备</li>
+		<?php if($user->isAdmin()):?>
 		<li id="tab_daily_open_times" class="tab">启动次数</li>
 		<li id="tab_daily_senconds_spent_per_open" class="tab">平均每次使用时长</li>
+		<?php endif?>
 	</ul>
 	<div class="panels">
 		<div id="panel_daily_new_devices" class="panel current">a</div>
 		<div id="panel_daily_all_devices" class="panel">b</div>
 		<div id="panel_daily_active_devices" class="panel">c</div>
+		<?php if($user->isAdmin()):?>
 		<div id="panel_daily_open_times" class="panel">d</div>
 		<div id="panel_daily_senconds_spent_per_open" class="panel">e</div>
+		<?php endif;?>
 	</div>
 </div>
 
-<?php include "block_top_ten_version.php"?>
-<?php include "block_top_ten_channel.php"?>
+<?php if($user->isAdmin()){
+	include "block_top_ten_version.php";
+	include "block_top_ten_channel.php";
+}?>
 
 
 <script>

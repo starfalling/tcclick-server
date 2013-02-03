@@ -2,7 +2,10 @@
 
 class ReportsController extends Controller{
 	public function filters(){
-		return array("LoginRequiredFilter");
+		return array(
+				"LoginRequiredFilter",
+				"AdminRequiredFilter + AjaxDailyOpenTimes, AjaxDailySecondsSpentPerOpen",
+		);
 	}
 	
 	
@@ -27,17 +30,27 @@ class ReportsController extends Controller{
 		$yesterday_data = self::generateZeroHourlyCount();
 		$week_ago_data = self::generateZeroHourlyCount();
 		$month_ago_data = self::generateZeroHourlyCount();
-		$sql = "select * from {counter_hourly_new} where channel_id=0
-		and `date` in ('$today', '$yesterday', '$week_ago', '$month_ago')";
+		
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql = "select * from {counter_hourly_new} where channel_id=0
+			and `date` in ('$today', '$yesterday', '$week_ago', '$month_ago')";
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql = "select * from {counter_hourly_new} where channel_id in (".join(',', $channel_ids).")
+				and `date` in ('$today', '$yesterday', '$week_ago', '$month_ago')";
+			}
+		}
 		foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 			if($row['date'] == $today){
-				$today_data[$row['hour']] = intval($row['count']);
+				$today_data[$row['hour']] += intval($row['count']);
 			}elseif($row['date'] == $yesterday){
-				$yesterday_data[$row['hour']] = intval($row['count']);
+				$yesterday_data[$row['hour']] += intval($row['count']);
 			}elseif($row['date'] == $week_ago){
-				$week_ago_data[$row['hour']] = intval($row['count']);
+				$week_ago_data[$row['hour']] += intval($row['count']);
 			}elseif($row['date'] == $month_ago){
-				$month_ago_data[$row['hour']] = intval($row['count']);
+				$month_ago_data[$row['hour']] += intval($row['count']);
 			}
 		}
 		$json['stats'][] = array("data"=>$today_data, "name"=>"今日","visible"=>true);
@@ -59,17 +72,27 @@ class ReportsController extends Controller{
 		$week_ago_data = self::generateZeroHourlyCount();
 		$month_ago_data = self::generateZeroHourlyCount();
 
-		$sql = "select * from {counter_hourly_active} where channel_id=0
-		and `date` in ('$today', '$yesterday', '$week_ago', '$month_ago')";
+
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql = "select * from {counter_hourly_active} where channel_id=0
+			and `date` in ('$today', '$yesterday', '$week_ago', '$month_ago')";
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql = "select * from {counter_hourly_active} where channel_id in (".join(',', $channel_ids).")
+				and `date` in ('$today', '$yesterday', '$week_ago', '$month_ago')";
+			}
+		}
 		foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 			if($row['date'] == $today){
-				$today_data[$row['hour']] = intval($row['count']);
+				$today_data[$row['hour']] += intval($row['count']);
 			}elseif($row['date'] == $yesterday){
-				$yesterday_data[$row['hour']] = intval($row['count']);
+				$yesterday_data[$row['hour']] += intval($row['count']);
 			}elseif($row['date'] == $week_ago){
-				$week_ago_data[$row['hour']] = intval($row['count']);
+				$week_ago_data[$row['hour']] += intval($row['count']);
 			}elseif($row['date'] == $month_ago){
-				$month_ago_data[$row['hour']] = intval($row['count']);
+				$month_ago_data[$row['hour']] += intval($row['count']);
 			}
 		}
 		$json['stats'][] = array("data"=>$today_data, "name"=>"今日","visible"=>true);
@@ -116,10 +139,20 @@ class ReportsController extends Controller{
 		$end_date = $_GET['end_date'] ? $_GET['end_date'] : date("Y-m-d", time());
 		$json = array("stats"=>array(), "result"=>"success");
 		$daily_count_with_dates = self::generateZeroDailyCount($start_date, $end_date);
-		$sql = "select `date`, `count` from {counter_daily_new} where `date`>=:start and `date`<=:end and channel_id=0";
+		
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql = "select `date`, `count` from {counter_daily_new} where `date`>=:start and `date`<=:end and channel_id=0";
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql = "select `date`, `count` from {counter_daily_new} where `date`>=:start and `date`<=:end and
+				channel_id in (".join(',', $channel_ids).")";
+			}
+		}
 		$stmt = TCClick::app()->db->query($sql, array(":start"=>$start_date, ":end"=>$end_date));
 		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
-			$daily_count_with_dates[$row['date']] = intval($row['count']);
+			$daily_count_with_dates[$row['date']] += intval($row['count']);
 		}
 		foreach($daily_count_with_dates as $date=>$count){
 			$daily_count[] = $count;
@@ -135,11 +168,36 @@ class ReportsController extends Controller{
 		$end_date = $_GET['end_date'] ? $_GET['end_date'] : date("Y-m-d", time());
 		$json = array("stats"=>array(), "dates"=>self::$all_hours, "result"=>"success");
 		$daily_count_with_dates = self::generateZeroDailyCount($start_date, $end_date);
-		$sql = "select `date`, all_devices_count as `count` from {counter_daily} where `date`>=:start and `date`<=:end";
-		$stmt = TCClick::app()->db->query($sql, array(":start"=>$start_date, ":end"=>$end_date));
-		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
-			$daily_count_with_dates[$row['date']] = intval($row['count']);
+		
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql = "select `date`, all_devices_count as `count` from {counter_daily} where `date`>=:start and `date`<=:end";
+			$stmt = TCClick::app()->db->query($sql, array(":start"=>$start_date, ":end"=>$end_date));
+			foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+				$daily_count_with_dates[$row['date']] = intval($row['count']);
+			}
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql = "select `date`, `count` from {counter_daily_new} where `date`<=:end and
+				channel_id in (".join(',', $channel_ids).") order by date";
+				
+				$sum = 0;
+				$stmt = TCClick::app()->db->query($sql, array(":end"=>$end_date));
+				foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+					$sum += $row['count'];
+					if(isset($daily_count_with_dates[$row['date']])){
+						$daily_count_with_dates[$row['date']] = $sum;
+					}
+				}
+				$prev_daily_count = 0; // 如果某一天这些渠道没有新增用户，那么select出来的行里面会没有这一天的数据，要进行修复
+				foreach($daily_count_with_dates as $date=>$count){
+					if($count == 0) $daily_count_with_dates[$date] = $prev_daily_count;
+					else $prev_daily_count = $count;
+				}
+			}
 		}
+		
 		foreach($daily_count_with_dates as $date=>$count){
 			$daily_count[] = $count;
 		}
@@ -157,17 +215,28 @@ class ReportsController extends Controller{
 		$daily_count_with_dates_active = self::generateZeroDailyCount($start_date, $end_date);
 		$daily_count_with_dates_old = self::generateZeroDailyCount($start_date, $end_date);
 		$daily_count_with_dates_new = self::generateZeroDailyCount($start_date, $end_date);
-		$sql = "select `date`, new_devices_count, active_devices_count from {counter_daily} where `date`>=:start and `date`<=:end";
-		$stmt = TCClick::app()->db->query($sql, array(":start"=>$start_date, ":end"=>$end_date));
-		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
-			$daily_count_with_dates_new[$row['date']] = intval($row['new_devices_count']);
-			$daily_count_with_dates_old[$row['date']] = intval($row['active_devices_count']) - $daily_count_with_dates_new[$row['date']];
+		
+		$user = User::current();
+		if($user->isAdmin()){
+			$sql_new = "select `date`, `count` from {counter_daily_new} where `date`>=:start and `date`<=:end and channel_id=0";
+			$sql_active = "select `date`, `count` from {counter_daily_active} where `date`>=:start and `date`<=:end and channel_id=0";
+		}else{
+			$channel_ids = $user->getChannelIds();
+			if($channel_ids){
+				$sql_new = "select `date`, `count` from {counter_daily_new} where `date`>=:start and `date`<=:end and
+				channel_id in (".join(',', $channel_ids).")";
+				$sql_active = "select `date`, `count` from {counter_daily_active} where `date`>=:start and `date`<=:end and
+				channel_id in (".join(',', $channel_ids).")";
+			}
 		}
-		// 今天的活跃设备数，没有在表 counter_daily 做实时计算，我们从表 counter_daily_active 中去取
-		if (isset($daily_count_with_dates_old[$today])){
-			$sql = "select `count` from {counter_daily_active} where channel_id=0 and date='{$today}'";
-			$active_count = TCClick::app()->db->query($sql)->fetchColumn();
-			$daily_count_with_dates_old[$today] = $active_count-$daily_count_with_dates_new[$today];
+		$stmt = TCClick::app()->db->query($sql_active, array(":start"=>$start_date, ":end"=>$end_date));
+		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+			$daily_count_with_dates_active[$row['date']] += intval($row['count']);
+		}
+		$stmt = TCClick::app()->db->query($sql_new, array(":start"=>$start_date, ":end"=>$end_date));
+		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+			$daily_count_with_dates_new[$row['date']] += intval($row['count']);
+			$daily_count_with_dates_old[$row['date']] = $daily_count_with_dates_active[$row['date']] - $daily_count_with_dates_new[$row['date']];
 		}
 		
 		foreach($daily_count_with_dates_new as $date=>$count) $daily_count_new[] = $count;

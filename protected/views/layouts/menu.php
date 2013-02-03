@@ -1,10 +1,14 @@
+<?php $user = User::current()?>
 <div id="page_menu">
 	<dl>
 		<dt>统计概况<b></b></dt>
 		<dd><a href="<?php echo TCClick::app()->root_url?>reports">基本统计</a></dd>
-		<dd><a href="<?php echo TCClick::app()->root_url?>reportsVersion">版本分布</a></dd>
 		<dd><a href="<?php echo TCClick::app()->root_url?>reportsChannel">渠道分布</a></dd>
+		<?php if($user && $user->isAdmin()):?>
+		<dd><a href="<?php echo TCClick::app()->root_url?>reportsVersion">版本分布</a></dd>
+		<?php endif?>
 	</dl>
+	<?php if($user && $user->isAdmin()):?>
 	<dl>
 		<dt>用户分析<b></b></dt>
 		<dd><a href="<?php echo TCClick::app()->root_url?>reportsActive">活跃设备</a></dd>
@@ -25,7 +29,8 @@
 		<dt>错误分析<b></b></dt>
 		<dd><a href="<?php echo TCClick::app()->root_url?>exceptions">错误分析</a></dd>
 	</dl>
-	<?php if(User::current()):?>
+	<?php endif?>
+	<?php if($user):?>
 	<dl>
 		<dt>账号<b></b></dt>
 		<?php if(User::current()->username=="admin"):?>
