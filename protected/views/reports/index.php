@@ -12,7 +12,7 @@ $user = User::current();
 $channel_ids = $user->getChannelIds();
 $channel_condition = "0";
 if($user->isAdmin()){ 
-	$channel_condition = "1";
+	$channel_condition = "channel_id=0";
 	$today_row['seconds_per_open'] = TCClickCounter::calculateSecondsSpentPerOpen($today);
 	$yesterday_row['seconds_per_open'] = TCClickCounter::calculateSecondsSpentPerOpen($yesterday);
 	$sql = 'select count(*) from {devices}';
