@@ -6,6 +6,7 @@ include "AnalyzeListenerVersionUpdateDevice.php";
 include "AnalyzeListenerActiveDevice.php";
 include "AnalyzeListenerUsage.php";
 include "AnalyzeListenerException.php";
+include "AnalyzeListenerEvent.php";
 
 /**
  * @author york
@@ -56,6 +57,7 @@ class Analyzer{
 		$this->listeners[] = new AnalyzeListenerActiveDevice();
 		$this->listeners[] = new AnalyzeListenerUsage();
 		$this->listeners[] = new AnalyzeListenerException();
+		$this->listeners[] = new AnalyzeListenerEvent();
 	}
 
 	public function analyze(){
@@ -68,17 +70,27 @@ class Analyzer{
 		
 		if(!$this->json) return;
 		$this->client_timeoffset = $this->server_timestamp - $this->json->timestamp;
-		$activities = $this->json->data->activities; // 修正时间偏移
-		if($activities){
-			foreach($activities as $activity){
-				$activity->start_at += $analyze->client_timeoffset;
-				if($activity->start_at > time()+86400) return; // 收集上来的客户端时间太过超前了，丢弃这样的数据
-				$activity->end_at += $analyze->client_timeoffset;
-				if($activity->end_at > time()+86400) return; // 收集上来的客户端时间太过超前了，丢弃这样的数据
-				$activity->seconds_spent = $activity->end_at - $activity->start_at;
+		if(isset($this->json->data->activities)){
+			$activities = $this->json->data->activities; // 修正时间偏移
+			if($activities){
+				foreach($activities as $activity){
+					$activity->start_at += $this->client_timeoffset;
+					if($activity->start_at > time()+86400) return; // 收集上来的客户端时间太过超前了，丢弃这样的数据
+					$activity->end_at += $this->client_timeoffset;
+					if($activity->end_at > time()+86400) return; // 收集上来的客户端时间太过超前了，丢弃这样的数据
+					$activity->seconds_spent = $activity->end_at - $activity->start_at;
+				}
 			}
 		}
 		
+		if(isset($this->json->data->events)){
+			$events = $this->json->data->events;
+			if($events){ // 修正时间偏移
+				foreach($events as $event_item){
+					$event_item->created_at += $this->client_timeoffset;
+				}
+			}
+		}
 		
 		foreach($this->listeners as $listener){
 			$listener->execute($this);
