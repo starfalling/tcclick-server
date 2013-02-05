@@ -9,6 +9,7 @@ class EventName{
 	}
 	
 	public static function nameof($id){
+		if(!$id) return null;
 		$sql = "select * from {event_names} where id=:id";
 		$row = TCClick::app()->db->query($sql, array(':id'=>$id))->fetch(PDO::FETCH_ASSOC);
 		if($row) return $row['name'];

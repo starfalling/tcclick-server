@@ -1,2 +1,3 @@
 api/test*
 .DS_Store
+protected/runtime/application.error.log

@@ -5,6 +5,18 @@ class Event{
 	public $name_id;
 	public $alias_id;
 	
+	public static function all(){
+		$result = array();
+		$sql = "select * from {events}";
+		$stmt = TCClick::app()->db->query($sql);
+		while(($row=$stmt->fetch(PDO::FETCH_ASSOC)) != null){
+			$instance = new self;
+			$instance->initWithDbRow($row);
+			$result[] = $instance;
+		}
+		return $result;
+	}
+	
 	public static function idFor($name_id){
 		$sql = "insert into {events} (name_id) values (:name_id)
 		on duplicate key update id=last_insert_id(id)";

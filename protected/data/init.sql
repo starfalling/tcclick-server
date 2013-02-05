@@ -273,7 +273,6 @@ create table if not exists tcclick_retention_rate_daily(
 	`retention8` smallint not null default -1,
 	primary key (`date`, `channel_id`)
 ) engine myisam;
-drop table if exists tcclick_retention_rate_weekly;
 create table if not exists tcclick_retention_rate_weekly(
 	`date` date not null,
 	`channel_id` smallint unsigned not null,
@@ -376,7 +375,8 @@ create table if not exists tcclick_counter_daily_events(
 	`version_id` smallint unsigned not null,
 	`value_id` integer unsigned not null, -- 取值在 event_names 里面的 ID
 	`count` integer unsigned not null,
-	primary key (`event_id`, `date`, `version_id`, `param_id`, `value_id`)
+	primary key (`event_id`, `date`, `version_id`, `param_id`, `value_id`),
+	key event_id(event_id)
 ) engine myisam;
 
 

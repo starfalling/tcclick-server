@@ -18,6 +18,10 @@
 		<dd><a href="<?php echo TCClick::app()->root_url?>reportsAreas">地域</a></dd>
 	</dl>
 	<dl>
+		<dt>客户端事件<b></b></dt>
+		<dd><a href="<?php echo TCClick::app()->root_url?>events">事件列表</a></dd>
+	</dl>
+	<dl>
 		<dt>终端及网络<b></b></dt>
 		<dd><a href="<?php echo TCClick::app()->root_url?>reportsModels">设备</a></dd>
 		<dd><a href="<?php echo TCClick::app()->root_url?>reportsOsVersion">操作系统</a></dd>
