@@ -1,14 +1,14 @@
 <?php
 
 class Carrier{
-	private static $all_carriers = null;
+	private static $all_carriers = false;
 	
 	/**
 	 * get all the carriers from databases
 	 * @return array associated array, key is the carrier name and value is the carrier id
 	 */
 	public static function all(){
-		if(self::$all_carriers === null){
+		if(self::$all_carriers === false){
 			self::reload();
 		}
 		return self::$all_carriers;
@@ -21,9 +21,9 @@ class Carrier{
 		}else{
 			self::$all_carriers = false;
 		}
-		if(self::$all_carriers === false){
+		if(empty(self::$all_carriers)){
 			self::$all_carriers = array();
-			$sql = "select * from {carriers}";
+			$sql = "select * from {carrier}";
 			$stmt = TCClick::app()->db->query($sql);
 			while(true){
 				$row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -49,8 +49,8 @@ class Carrier{
 	 * @param string $carrier
 	 */
 	public static function idFor($carrier){
-		if(!$carrier) return null;
 		$carrier = trim($carrier);
+		if(!$carrier) return null;
 		static $other_names = array(
 				"China Mobile Communication Corp."=>"中国移动",
 				"CHINA MOBILE" => "中国移动",
