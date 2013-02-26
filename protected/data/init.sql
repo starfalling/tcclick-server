@@ -195,7 +195,7 @@ create table if not exists tcclick_counter_daily_active_model(
 create table if not exists tcclick_areas(
 	id smallint unsigned not null primary key auto_increment,
 	area varchar(50),
-	key area(area)
+	unique key area(area)
 ) engine myisam character set utf8;
 insert ignore into tcclick_areas(area) values ('中国'),('北京'),('上海'),('天津'),('重庆'),
 ('安徽'),('福建'),('甘肃'),('广东'),('广西'),('贵州'),('海南'),('河北'),('河南'),
