@@ -37,6 +37,25 @@ arsort($new_device_counts);
 $sql = "select sum(count) from {counter_daily_new_model} where date>='$start_date' and date <='$end_date'";
 $all_new_device = TCClick::app()->db->query($sql)->fetchColumn(0);
 
+
+// iOS 越狱图表
+$show_jailbroken = false;
+$jailbroken_percent = 0;
+TCClick::app()->db->query("select * from {counter_daily_active_jailbroken} limit 1", null, $errorInfo);
+if(!$errorInfo){
+	$show_jailbroken = true;
+	
+	$sql = "select sum(count) from {counter_daily_active_jailbroken} 
+	where date>='$start_date' and date <='$end_date'
+	and jailbroken=1";
+	$jailbroken_count = TCClick::app()->db->query($sql)->fetchColumn(0);
+
+	$sql = "select sum(count) from {counter_daily_active_jailbroken} 
+	where date>='$start_date' and date <='$end_date'";
+	$all_count = TCClick::app()->db->query($sql)->fetchColumn(0);
+	$jailbroken_percent = $jailbroken_count / $all_count;
+}
+
 ?>
 <h1>设备</h1>
 <div class="block">
@@ -44,6 +63,9 @@ $all_new_device = TCClick::app()->db->query($sql)->fetchColumn(0);
   <ul class="tabs">
     <li id="tab_active_device" class="tab current">活跃设备</li>
     <li id="tab_new_device" class="tab">新增设备</li>
+    <?php if($show_jailbroken):?>
+    <li id="tab_jailbroken" class="tab">越狱比例</li>
+    <?php endif;?>
   </ul>
   <div class="panels">
     <div id="pan_active_device" style='height:auto' class="panel current">
@@ -76,6 +98,30 @@ $all_new_device = TCClick::app()->db->query($sql)->fetchColumn(0);
 				</tr><?php $i++;if($i==20)break;endforeach;endif;?>
     </table>
     </div>
+    <?php if($show_jailbroken):?>
+    <div id="pan_jailbroken" style='height:auto' class="panel">
+      <table>
+				<thead>
+					<th width="190">是否越狱</th>
+					<th>比例</th>
+				</thead>
+				<tr>
+					<td>已越狱</td>
+					<td class='percent'>
+						<div class="label"><?php printf('%.02f', $jailbroken_percent*100)?>%</div>
+						<div class="chart_area"><div style="width:<?php echo $jailbroken_percent*100?>%"></div></div>
+					</td>
+				</tr>
+				<tr>
+					<td>未越狱</td>
+					<td class='percent'>
+						<div class="label"><?php printf('%.02f', 100-$jailbroken_percent*100)?>%</div>
+						<div class="chart_area"><div style="width:<?php echo 100-$jailbroken_percent*100?>%"></div></div>
+					</td>
+				</tr>
+    </table>
+    </div>
+    <?php endif;?>
   </div> 
 </div>
 

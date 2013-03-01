@@ -144,6 +144,19 @@ class AnalyzeListenerActiveDevice implements IAnalyzeListener{
 					TCClick::app()->db->execute($sql);
 				}
 				
+				// iOS 越狱与否的活跃统计
+				if(isset($analyze->json->device->jailbroken)){
+					$jailbroken = $analyze->json->device->jailbroken=='true' ? 1 : 0;
+					$sql = "insert into {counter_daily_active_jailbroken} (`date`, jailbroken, count)
+					values ('{$date}', {$jailbroken}, 1)
+					on duplicate key update `count`=`count`+1";
+					TCClick::app()->db->execute($sql, null, $errorInfo);
+					if($errorInfo && $errorInfo[0] = "42S02"){ // table not exists
+						$this->createTableForIosJailbrokenCounter();
+						TCClick::app()->db->execute($sql);
+					}
+				}
+				
 				// 标记这一天所在的自然周、自然月用户是活跃的
 				$week_start_date = $this->weekStartDateOf($date);
 				$active_weeks[$week_start_date] = true;
@@ -206,6 +219,17 @@ class AnalyzeListenerActiveDevice implements IAnalyzeListener{
 		$time = is_numeric($date) ? $date : strtotime($date);
 		$dayOfWeek = intval(date("N", $time));
 		return date("Y-m-d", $time-86400*($dayOfWeek-1));
+	}
+	
+	private function createTableForIosJailbrokenCounter(){
+		$sql = "
+		create table if not exists {counter_daily_active_jailbroken}(
+			`date` date,
+			`jailbroken` tinyint not null default 0,
+			`count` integer unsigned not null default 0,
+			primary key (`date`, jailbroken)
+		) engine myisam";
+		TCClick::app()->db->execute($sql);
 	}
 }
 
