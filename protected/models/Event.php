@@ -40,5 +40,6 @@ class Event{
 		$this->name_id = $row['name_id'];
 		$this->alias_id = $row['alias_id'];
 	}
+	
 }
 

@@ -32,6 +32,18 @@ class EventParam{
 	}
 
 	public static function loadByEventAndName($event_id, $name_id){
+		static $cached_event_params = null;
+		if($cached_event_params === null){
+			$cache_key = "tcclick_cached_event_params";
+			$cached_event_params = TCClick::app()->cache->get($cache_key, array());
+		}
+		if(isset($cached_event_params[$event_id]) && isset($cached_event_params[$event_id][$name_id])){
+			$row = $cached_event_params[$event_id][$name_id];
+			$instance = new self;
+			$instance->initWithDbRow($row);
+			return $instance;
+		}
+		
 		$sql = "select * from {event_params} where event_id=:event_id and name_id=:name_id";
 		$params = array(':event_id'=>$event_id, ':name_id'=>$name_id);
 		$row = TCClick::app()->db->query($sql, $params)->fetch(PDO::FETCH_ASSOC);
