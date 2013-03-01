@@ -122,8 +122,20 @@ function render_chart(chart_id, title, data_src_url, params, force_reload, opts)
 				"enabled":false
 			},
 			plotOptions: {
-				"area":{
-					"stacking":null
+				 area:{
+					"stacking":"normal",
+					//设置 
+					"lineWidth": 0,
+					 marker: {
+		            		enabled: false,
+		           		 	symbol: 'circle',
+		                 radius: 2,
+		                 states: {
+		                     hover: {
+		                         enabled: true
+		                 }
+		              }
+		           } //
 				},
 				"series":{
 					animation: false,
@@ -189,6 +201,13 @@ function render_chart(chart_id, title, data_src_url, params, force_reload, opts)
 		},
 		baseZ:997
 	});
+	if(getURLParameter("version_id")!='null'){
+		params["version_id"] = getURLParameter("version_id");
+	}
+	if(getURLParameter("param_id")!='null'){
+		params["param_id"] = getURLParameter("param_id");
+	}
+	
 	var fromDate = toDate = null;
 	if(getURLParameter("from")!='null'){
 		fromDate = new Date(getURLParameter("from"));

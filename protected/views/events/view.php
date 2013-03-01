@@ -1,26 +1,81 @@
-<h1><?php echo EventName::nameof($event->name_id)?><?php echo TCClickUtil::selector(array(
+<h1>
+<?php echo EventName::nameof($event->name_id)?>
+<?php echo TCClickUtil::selector(array(
 		array("label"=>"最近一月", "from"=>date("Y-m-d", time()-86400*30)),
 		array("label"=>"最近两月", "from"=>date("Y-m-d", time()-86400*60)),
 		array("label"=>"最近三月", "from"=>date("Y-m-d", time()-86400*90)),
 		array("label"=>"最近一年", "from"=>date("Y-m-d", time()-86400*365)),
 ));
-echo TCClickUtil::selector(array(
-		array("label"=>"全部版本"),
-))?></h1>
+
+$sql= "select * from {event_params} where event_id ={$_GET['id']}";
+$stmt = TCClick::app()->db->query($sql);
+$param_array = array();
+foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+	$param_array[]=array("label"=>EventName::nameof($row['name_id']),"param_id"=>$row['param_id']);
+}
+echo TCClickUtil::selector($param_array);
+
+
+$sql="select * from {versions}";
+$stmt = TCClick::app()->db->query($sql);
+$version_array = array();
+$version_array[]=array("label"=>"全部版本","version_id"=>"0");
+foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
+	$version_array[]=array("label"=>$row['version'],"version_id"=>$row['id']);
+}
+echo TCClickUtil::selector($version_array);
+?>
+</h1>
 <div class="block">
 	<h3><a href="<?php echo TCClick::app()->root_url?>events">&lt;&lt; 返回事件列表</a></h3>
   <ul class="tabs">
-    <li id="" class="tab current">日活跃设备</li>
-    <li id="tab_active_week" class="tab">周活跃设备</li>
-    <li id="tab_active_month" class="tab">月活跃设备</li>
-    <li id="tab_active_week_rate" class="tab">周活跃率</li>
-    <li id="tab_active_month_rate" class="tab">月活跃率</li>
+  	<li id="" class="tab current">次数率分布</li>
+  	<li id="tab_daily_spline" class="tab">次数分布</li>
   </ul> 
   <div class="panels">
-    <div id="panel_active_day" class="panel current">a</div>
-    <div id="panel_active_week" class="panel">b</div>
-    <div id="panel_active_month" class="panel">c</div>
-    <div id="panel_active_week_rate" class="panel">d</div>
-    <div id="panel_active_month_rate" class="panel">f</div>
+    <div id="panel_daily_area" class="panel current">a</div>
+    <div id="panel_daily_spline" class="panel" >b</div>
   </div>
 </div>
+<script>
+$(function(){
+	  render_chart('panel_daily_area','',root_url+'events/AjaxDailyCounts?event_id=<?php echo $_GET['id']?>', {}, false,{
+		tooltip: {formatter: function() { return this.series.name+':'+ this.x +': '+ Math.round(this.y*100) +'%';}},
+		chart: {defaultSeriesType: 'area'},
+		 xAxis: {
+             labels: { rotation: -50, align: "right"},
+             tickmarkPlacement: 'on',
+    },
+	   yAxis: {
+		   labels: {
+               formatter: function() {
+               	  return this.value*100+'%';
+               }
+           },
+		},
+		plotOptions: {
+	        area: {
+	            stacking: 'normal',
+	            lineWidth: 0,
+	            marker: {
+	            		enabled: false,
+	           		 	symbol: 'circle',
+	                 radius: 2,
+	                 states: {
+	                     hover: {
+	                         enabled: true
+	                 }
+	              }
+	           }
+	        }
+	    },
+	});
+
+	$("#tab_daily_spline").click(function(){
+	  $("#panel_daily_spline").show();
+		render_chart('panel_daily_spline','',root_url+'events/AjaxDailyCountsSpline?event_id=<?php echo $_GET['id']?>', {}, false,{
+			tooltip: {formatter: function() { return this.series.name+':'+ this.x +': '+ this.y;}}, });
+	});
+});
+
+</script>
