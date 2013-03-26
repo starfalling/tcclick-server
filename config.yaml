@@ -35,3 +35,11 @@ cron:
   - description: 缓存常见的设备型号，以降低数据库访问频率
   url: api/cache_common_data_for_analyze.php
   schedule: 0 3 * * *
+  
+  - description: 删除过早的记录日活跃设备清单的表，以减少数据库占用
+  url: api/drop_old_daily_active_devices_tables.php
+  schedule: 10 3 * * *
+  
+  - description: 删除过早的记录小时活跃设备清单的表，以减少数据库占用
+  url: api/drop_old_hourly_active_devices_tables.php
+  schedule: 20 3 * * *
