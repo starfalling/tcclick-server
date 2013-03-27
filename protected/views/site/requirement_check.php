@@ -6,6 +6,17 @@ $errors = array();
 $result = TCClick::app()->cache->set('test', 'test', '1');
 if(!$result) $errors[] = "无法连接至memcache";
 
+// 目录权限检查
+$runtime_folder = TCClick::app()->root_path . "/protected/runtime";
+if(!is_dir($runtime_folder)){
+	if(!mkdir($runtime_folder, 0744)) $errors[] = "无法创建文件夹：" . $runtime_folder;
+}
+$device_ids_folder = TCClick::app()->root_path . "/protected/runtime/device_ids";
+if(!is_dir($device_ids_folder)){
+	if(!mkdir($device_ids_folder, 0744)) $errors[] = "无法创建文件夹：" . $runtime_folder;
+}
+
+
 $is_db_created = true;
 try{
 	TCClick::app()->db->connect();
