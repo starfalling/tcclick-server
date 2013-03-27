@@ -13,7 +13,7 @@ if($data_compressed){
 		$sql = "insert into {client_activities} (server_timestamp, data_compressed, ip) 
 				values (" . time() . ", :data, :ip)";
 		TCClick::app()->db->execute($sql, array(":data"=>$data_compressed, 
-		":ip"=>IpLocationSeekerTCClick::ip2int()));
+		":ip"=>IpLocationSeekerTCClick::ip2int($ip)));
 		TCClick::app()->db->close();
 	}
 	
