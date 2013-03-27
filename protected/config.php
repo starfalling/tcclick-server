@@ -27,6 +27,8 @@ define("TCCLICK_HOURLY_ACTIVE_DEVICE_RECORD_TIME", 86400*3);
 // 日活跃设备列表的表存在时间，也就是 daily_active_devices_2012_08_01 这样的表会在下面配置的时间之后由cron任务删除
 define("TCCLICK_DAILY_ACTIVE_DEVICE_RECORD_TIME", 86400*14);
 
+define("SAE_CLIENT_ACTIVITY_FORWARD_URL", false);
+define("SAE_ANALYZE_CLOSED", false);
 
 global $router_config;
 $router_config = array(
