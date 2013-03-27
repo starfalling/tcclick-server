@@ -8,6 +8,10 @@ class CacheMemcache{
 		if(defined('SAE_TMP_PATH')){ // SAE
 			$this->mmc = new Memcached();
 			$this->is_memcached = true;
+		}elseif(class_exists('Memcached')){
+			$this->is_memcached = true;
+			$this->mmc = new Memcached();
+			$this->mmc->addServer(MEMCACHE_HOST, MEMCACHE_PORT, 1);
 		}else{
 			$this->is_memcached = false;
 			$this->mmc = new Memcache();
