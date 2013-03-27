@@ -10,17 +10,28 @@ if($_GET['date'] == "yesterday") $date = date("Y-m-d", time()-86400);
 $time = strtotime($date);
 
 
-// 从 SaeStorage 读取记录活跃设备号的备份文件，然后执行解压缩，放如临时文件当中
-$gz_filename = "daily_active_devices_" . str_replace("-", "_", $date) . ".txt.gz";
-$s = new SaeStorage();
-$tmp_gz_filepath = SAE_TMP_PATH . $gz_filename;
-$tmp_filepath = SAE_TMP_PATH . "daily_active_devices_" . str_replace("-", "_", $date) . ".txt";
-file_put_contents($tmp_gz_filepath, $s->read(STORAGE_DOMAIN_EXPORTED_DEVICE_IDS, $gz_filename));
-$handle = gzopen($tmp_gz_filepath, 'r');
-while (!gzeof($handle)) $active_device_ids_str .= gzread($handle, 102400);
-gzclose($handle);
-file_put_contents($tmp_filepath, $active_device_ids_str); // 把解压缩了的文件存入临时文件系统
-$active_device_ids_str = null;
+$date_for_filename = str_replace("-", "_", $date);
+if(defined('SAE_TMP_PATH')){
+	// 从 SaeStorage 读取记录活跃设备号的备份文件，然后执行解压缩，放如临时文件当中
+	$gz_filename = "daily_active_devices_{$date_for_filename}.txt.gz";
+	$s = new SaeStorage();
+	$tmp_gz_filepath = SAE_TMP_PATH . $gz_filename;
+	$tmp_filepath = SAE_TMP_PATH . "daily_active_devices_{$date_for_filename}.txt";
+	file_put_contents($tmp_gz_filepath, $s->read(STORAGE_DOMAIN_EXPORTED_DEVICE_IDS, $gz_filename));
+	$handle = gzopen($tmp_gz_filepath, 'r');
+	while (!gzeof($handle)) $active_device_ids_str .= gzread($handle, 102400);
+	gzclose($handle);
+	file_put_contents($tmp_filepath, $active_device_ids_str); // 把解压缩了的文件存入临时文件系统
+	$active_device_ids_str = null;
+}else{
+	$gz_filepath = TCClick::app()->root_path . "/protected/runtime/device_ids/daily_active_devices_{$date_for_filename}.txt.gz";
+	$tmp_filepath = TCClick::app()->root_path . "/protected/runtime/device_ids/daily_active_devices_{$date_for_filename}.txt";
+	$handle = gzopen($gz_filepath, 'r');
+	while (!gzeof($handle)) $active_device_ids_str .= gzread($handle, 102400);
+	gzclose($handle);
+	file_put_contents($tmp_filepath, $active_device_ids_str); // 把解压缩了的文件存入临时文件系统
+	$active_device_ids_str = null;
+}
 
 
 // 计算某一天之前八天的相关留存率数据
@@ -81,3 +92,6 @@ for($i=1; $i<=8; $i++){
 	$sql .= " on duplicate key update retention{$i}=values(retention{$i}), new_count=values(new_count)";
 	TCClick::app()->db->execute($sql);
 }
+
+unlink($tmp_filepath);
+
