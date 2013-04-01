@@ -66,9 +66,7 @@ class EventsController extends  Controller{
 	  	}
 	  	$json['stats'][] = array("data"=>$daily_count, "name"=>EventName::nameOf($key));
 	  }
-	  //print_r($all_count);
-	  print_r($daily_count_with_dates);
-		//echo json_encode($json);
+		echo json_encode($json);
 	}
 	
 	public function actionAjaxDailyCountsSpline(){
