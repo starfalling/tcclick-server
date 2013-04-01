@@ -16,7 +16,7 @@ foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 echo TCClickUtil::selector($param_array);
 
 
-$sql="select * from {versions}";
+$sql="select * from {versions} order by id DESC";
 $stmt = TCClick::app()->db->query($sql);
 $version_array = array();
 $version_array[]=array("label"=>"全部版本","version_id"=>"0");
@@ -29,16 +29,21 @@ echo TCClickUtil::selector($version_array);
 <div class="block">
 	<h3><a href="<?php echo TCClick::app()->root_url?>events">&lt;&lt; 返回事件列表</a></h3>
   <ul class="tabs">
-  	<li id="" class="tab current">次数率分布</li>
-  	<li id="tab_daily_spline" class="tab">次数分布</li>
+  	<li id="tab_daily_spline" class="tab current">次数分布</li>
+  	<li id="tab_daily_area" class="tab">次数率分布</li>
   </ul> 
   <div class="panels">
-    <div id="panel_daily_area" class="panel current">a</div>
-    <div id="panel_daily_spline" class="panel" >b</div>
+  	<div id="panel_daily_spline" class="panel current" >b</div>
+    <div id="panel_daily_area" class="panel">a</div>
   </div>
 </div>
 <script>
 $(function(){
+	render_chart('panel_daily_spline','',root_url+'events/AjaxDailyCountsSpline?event_id=<?php echo $_GET['id']?>', {}, false,{
+		tooltip: {formatter: function() { return this.series.name+':'+ this.x +': '+ this.y;}}, });
+	
+	$("#tab_daily_area").click(function(){
+		 $("#panel_daily_area").show();
 	  render_chart('panel_daily_area','',root_url+'events/AjaxDailyCounts?event_id=<?php echo $_GET['id']?>', {}, false,{
 		tooltip: {formatter: function() { return this.series.name+':'+ this.x +': '+ Math.round(this.y*100) +'%';}},
 		chart: {defaultSeriesType: 'area'},
@@ -70,11 +75,6 @@ $(function(){
 	        }
 	    },
 	});
-
-	$("#tab_daily_spline").click(function(){
-	  $("#panel_daily_spline").show();
-		render_chart('panel_daily_spline','',root_url+'events/AjaxDailyCountsSpline?event_id=<?php echo $_GET['id']?>', {}, false,{
-			tooltip: {formatter: function() { return this.series.name+':'+ this.x +': '+ this.y;}}, });
 	});
 });
 

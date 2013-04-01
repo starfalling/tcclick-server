@@ -19,7 +19,7 @@ class EventsController extends  Controller{
 	}
 	
 	public function actionAjaxDailyCounts(){
-		//header("Content-type: application/json;charset=utf-8");
+		header("Content-type: application/json;charset=utf-8");
 		$today = date("Y-m-d");
 		$start_date = $_GET['from'] ? $_GET['from'] : date("Y-m-d", time()-86400*30);
 		$end_date = $today;
@@ -37,10 +37,10 @@ class EventsController extends  Controller{
 	  
 	  if($version){
 	  	$sql = "select * from {counter_daily_events} where event_id={$_GET['event_id']}
-	  	and version_id={$version} and param_id={$param} and date>='$from'";
+	  	and version_id={$version} and param_id={$param} and date>='$start_date'";
 	  }else{
 	  $sql = "select * from {counter_daily_events} where event_id={$_GET['event_id']}
-	  		and param_id={$param} and date>='$from'";
+	  		and param_id={$param} and date>='$start_date'";
 	  }
 	  
 	  $stmt = TCClick::app()->db->query($sql);
@@ -88,10 +88,10 @@ class EventsController extends  Controller{
 		 
 		if($version){
 			$sql = "select * from {counter_daily_events} where event_id={$_GET['event_id']}
-			and version_id={$version} and param_id={$param} and date>='$from'";
+			and version_id={$version} and param_id={$param} and date>='$start_date'";
 		}else{
 		$sql = "select * from {counter_daily_events} where event_id={$_GET['event_id']}
-				and param_id={$param} and date>='$from'";
+				and param_id={$param} and date>='$start_date'";
 		}
 		
 		$stmt = TCClick::app()->db->query($sql);
