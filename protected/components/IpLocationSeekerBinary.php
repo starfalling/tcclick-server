@@ -69,7 +69,7 @@ class IpLocationSeekerBinary {
 			if($prev_name == $country) continue; // 跟上一条记录重复，可以进行合并
 			$prev_name = $country;
 			$items[] = "({$ip_int}, '{$country}')";
-			if(count($items) == 500){
+			if(count($items) == 10000){
 				$sql = "insert into {qqwry} (ip, name) values ".join(",", $items);
 				TCClick::app()->db->execute($sql);
 				$items = array();
@@ -207,7 +207,7 @@ class IpLocationSeekerBinary {
 		fseek($this->handle, $file_offset, SEEK_SET);
 		$ip_middle_int = self::fgetint($this->handle, false);
 		if ($ip_middle_int == $ip_int) return $index_low;
-		elseif ($ip_int > $ip_middle_int){
+		elseif (($ip_int > $ip_middle_int && $ip_middle_int > 0) || ( $ip_int < 0 && ($ip_int > $ip_middle_int || $ip_middle_int > 0 ))){
 			$index_low = $index_middle;
 			return $this->half_find($ip_int, $index_low, $index_high, $this->first_index_pos);
 		}else{
@@ -235,37 +235,39 @@ class IpLocationSeekerBinary {
 				$ip_record_level_three_pos = self::fgetint_with_three_bytes($this->handle);
 				$level_three_flag = ord(fgetc($this->handle));
 				fseek($this->handle, $ip_record_level_three_pos, SEEK_SET);
-				$country = self::fgets_zeor_end($this->handle);
+				$country = self::fgets_zero_end($this->handle);
 				
 				if($level_three_flag==1 || $level_three_flag==2){
 					fseek($this->handle, $ip_record_level_two_pos+5, SEEK_SET);
 					$ip_record_area_string_pos = self::fgetint_with_three_bytes($this->handle);
 					fseek($this->handle, $ip_record_area_string_pos, SEEK_SET);
-					$area = self::fgets_zeor_end($this->handle);
+					$area = self::fgets_zero_end($this->handle);
 				}else{
 					fseek($this->handle, $ip_record_level_two_pos+4, SEEK_SET);
-					$area = self::fgets_zeor_end($this->handle);
+					$area = self::fgets_zero_end($this->handle);
 				}
 			}else{
 				fseek($this->handle, $ip_record_level_two_pos, SEEK_SET);
-				$country = self::fgets_zeor_end($this->handle);
-				$area = self::fgets_zeor_end($this->handle);
+				$country = self::fgets_zero_end($this->handle);
+				$area = self::fgets_zero_end($this->handle);
 			}
 		}elseif($flag == 2){
 			$ip_record_level_two_pos = self::fgetint_with_three_bytes($this->handle);
 			fseek($this->handle, $ip_record_level_two_pos, SEEK_SET);
-			$country = self::fgets_zeor_end($this->handle);
+			$country = self::fgets_zero_end($this->handle);
 			fseek($this->handle, $ip_record_pos+8, SEEK_SET);
-			$area = self::fgets_zeor_end($this->handle);
+			$area = self::fgets_zero_end($this->handle);
 		}else{
 			fseek($this->handle, $ip_record_pos+4, SEEK_SET);
-			$country = self::fgets_zeor_end($this->handle);
-			$area = self::fgets_zeor_end($this->handle);
+			$country = self::fgets_zero_end($this->handle);
+			$area = self::fgets_zero_end($this->handle);
 		}
-
-		if(ord($area{0}) == 2) $area = ""; // 不规则字符
-		$country = iconv("gb18030", "utf-8", $country);
-		$area = iconv("gb18030", "utf-8", $area);
+		
+		$country = iconv("gb18030", "utf-8//IGNORE", $country);
+		if($area){
+			if(ord($area{0}) == 2) $area = ""; // 不规则字符
+			else $area = iconv("gb18030", "utf-8//IGNORE", $area);
+		}
 		return array($country, $area);
 	}
 
@@ -273,7 +275,7 @@ class IpLocationSeekerBinary {
 	 * 从文件的当前位置读取一个以\0结尾的字符串
 	 * @param resource $handle 文件指针
 	 */
-	private static function fgets_zeor_end($handle){
+	private static function fgets_zero_end($handle){
 		$result = "";
 		while(true){
 			$char = fgetc($handle);
