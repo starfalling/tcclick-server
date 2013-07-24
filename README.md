@@ -19,4 +19,4 @@ TCClick统计平台服务器端
 
 在SAE平台上的安装部署文档参见博文：[http://blog.yorkgu.me/2012/09/29/install_tcclick_on_sina_app_engine/](http://blog.yorkgu.me/2012/09/29/install_tcclick_on_sina_app_engine/)
 
-目前遭遇SAE数据库超配额问题(日活跃较大的情况下)，正着手解决中...
+目前遭遇SAE数据库超配额问题(日活跃较大的情况下)，免费账户的数据库访问次数、memcache访问次数超额问题无法解决
