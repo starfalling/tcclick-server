@@ -11,6 +11,8 @@ class ReportsController extends Controller{
 	
 
 	public function actionIndex(){
+		$dbMigrateUtil = new DbMigrateUtil();
+		$dbMigrateUtil->upgrade();
 		$this->render("index");
 	}
 	
