@@ -41,6 +41,7 @@
 		<dd><a href="<?php echo TCClick::app()->root_url?>users">账号管理</a></dd>
 		<?php endif?>
 		<dd><a href="<?php echo TCClick::app()->root_url?>users/changePassword">修改密码</a></dd>
+		<dd><a href="<?php echo TCClick::app()->root_url?>externalCodes/index">外部访问码</a></dd>
 	</dl>
 	<?php endif;?>
 </div>
