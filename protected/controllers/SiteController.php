@@ -2,6 +2,8 @@
 
 class SiteController extends Controller{
 	public function actionIndex(){
+		$dbMigrateUtil = new DbMigrateUtil();
+		$dbMigrateUtil->upgrade();
 		if (User::current()){
 			$this->redirect(TCClick::app()->root_url . 'reports');
 		}else

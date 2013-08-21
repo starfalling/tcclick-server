@@ -1,7 +1,10 @@
 <?php
 class ReportsModelsController extends Controller{
 	public function filters(){
-		return array("AdminRequiredFilter");
+		return array(
+				"ExternalAccessFilter - index",
+				"AdminRequiredFilter",
+		);
 	}
 	
 	public function actionAjaxListBlock(){
@@ -10,6 +13,6 @@ class ReportsModelsController extends Controller{
 	
   
   public function actionIndex(){
-    $this->render('index');
+    $this->renderCompatibleWithExternalSite('index');
   }
 }

@@ -21,7 +21,7 @@ class User{
 	public static function all(){
 		$users = array();
 		$sql = "select * from {users}";
-		$rows = TCClick::app()->db->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
+		$rows = TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 		foreach($rows as $row){
 			$user = new self();
 			$user->initWithDbRow($row);
@@ -53,7 +53,7 @@ class User{
 		$sql = "select * from {user_channels} uc 
 		where uc.user_id=".intval($this->id);
 		$channel_ids = array();
-		$rows = TCClick::app()->db->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
+		$rows = TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 		foreach($rows as $row){
 			$channel_ids[] = $row['channel_id'];
 		}
@@ -65,11 +65,16 @@ class User{
 	 */
 	public static function current(){
 		static $current_user = null;
-		if(!$current_user && $_COOKIE['TCCLICK_ACCESS_TOKEN']){
+		if($current_user) return $current_user;
+		if($_COOKIE['TCCLICK_ACCESS_TOKEN']){
 			$sql = "select * from {access_tokens} where access_token=:access_token";
 			$params = array(":access_token"=>$_COOKIE['TCCLICK_ACCESS_TOKEN']);
 			$row = TCClick::app()->db->query($sql, $params)->fetch(PDO::FETCH_ASSOC);
 			if($row) $current_user = self::findById($row['user_id']);
+		}
+		if($_GET['external_code']){
+			$code = ExternalCode::findByCode($_GET['external_code']);
+			if($code) $current_user = $code->getUser();
 		}
 		if($current_user && !$current_user->isAdmin() && $current_user->status==self::STATUS_BANNED){
 			// 已被禁用的普通账号

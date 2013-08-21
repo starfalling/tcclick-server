@@ -2,7 +2,10 @@
 include_once "ReportsController.php";
 class ReportsActiveController extends  Controller{
 	public function filters(){
-		return array("AdminRequiredFilter");
+		return array(
+				"AdminRequiredFilter",
+				"ExternalAccessFilter - index",
+		);
 	}
 	
 	
@@ -152,7 +155,7 @@ class ReportsActiveController extends  Controller{
 		$rate = 0;
 		$month_end_date = date("Y-m-d", strtotime("+1 month", strtotime($month_start_date)) - 86400);
 		$today = date("Y-m-d");
-		if($week_end_date > $today){ // 今天所在的这一个月，直接取当前总激活设备数
+		if($month_end_date > $today){ // 今天所在的这一个月，直接取当前总激活设备数
 			$sql = 'select count(*) from {devices}';
 			$all_devices_count = TCClick::app()->db->query($sql)->fetchColumn(); 
 		}else{

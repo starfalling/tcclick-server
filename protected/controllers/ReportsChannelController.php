@@ -3,7 +3,10 @@
 include_once "ReportsController.php";
 class ReportsChannelController extends Controller{
 	public function filters(){
-		return array("LoginRequiredFilter");
+		return array(
+				"LoginRequiredFilter",
+				"ExternalAccessFilter - index",
+		);
 	}
 	
 	

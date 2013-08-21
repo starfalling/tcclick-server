@@ -5,13 +5,16 @@ class ReportsController extends Controller{
 		return array(
 				"LoginRequiredFilter",
 				"AdminRequiredFilter + AjaxDailyOpenTimes, AjaxDailySecondsSpentPerOpen",
+				"ExternalAccessFilter - index"
 		);
 	}
 	
 	
 
 	public function actionIndex(){
-		$this->render("index");
+		$dbMigrateUtil = new DbMigrateUtil();
+		$dbMigrateUtil->upgrade();
+		$this->renderCompatibleWithExternalSite("index");
 	}
 	
 	

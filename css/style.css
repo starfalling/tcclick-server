@@ -41,6 +41,10 @@ background: url(../images/bg_jdleft.jpg) no-repeat 0 -150px;top:0;}
 #page_menu dt:hover{background-position:0 0;}
 #page_menu dt:hover b{background-position:0 -90px;}
 
+#site_selector .selector{width:150px;margin:0 0 0;top:0;font-weight:bold;color:#333;}
+#site_selector .selector a{color:#333;}
+#site_selector{height:28px;width:152px;margin-bottom:10px;padding-top:4px;}
+
 #page_content #right_column{float:right;width:830px;min-height:30px;}
 #page_content #right_column .message .info{border:1px solid #70A8E9;margin-bottom:5px;padding:3px 0 0 10px;}
 #page_content #right_column .message .error{border:1px solid red;margin-bottom:5px;padding:3px 0 0 10px;}

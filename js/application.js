@@ -3,6 +3,8 @@ function getURLParameter(name) {
         (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
     );
 }
+var external_site_id = getURLParameter('external_site_id');
+if(external_site_id=='null') external_site_id = null;
 
 
 $(function(){
@@ -29,7 +31,11 @@ $(function(){
 		current_url = current_url.substring(0, window.location.href.indexOf("?"));
 	}
 	$("#page_menu dd a").each(function(i, e){
-		if(e.href && e.href==current_url){
+	  var href = e.href;
+	  if(href.indexOf('?')!=-1){
+	    href = href.substring(0, href.indexOf('?'));
+	  }
+		if(href && href==current_url){
 			$(e).parent().addClass("current");
 		}
 	});
@@ -102,6 +108,15 @@ $(function(){
 			}
 		});
 	});
+	
+	
+	// 给网页中的超链接设置 external_site_id 参数
+	if(external_site_id){
+    $(".block h3 a").each(function(){
+      if(this.href.indexOf('?')!=-1) this.href += "&external_site_id="+external_site_id;
+      else this.href += "?external_site_id="+external_site_id;
+    });
+  }
 });
 
 
@@ -223,7 +238,11 @@ function render_chart(chart_id, title, data_src_url, params, force_reload, opts)
 		$.extend(opts, {plotOptions:{spline:{marker:{enabled: false}}}});
 	}
 	
-	$.get( data_src_url, params, function(resp){
+	if(external_site_id){
+	  if(data_src_url.indexOf('?')!=-1) data_src_url += "&external_site_id="+external_site_id;
+	  else data_src_url += "?external_site_id="+external_site_id;
+	}
+	$.get(data_src_url, params, function(resp){
 		if( resp.result == 'success'){
 			$.each(resp.dates, function(i,date){
 				categories[i] = date

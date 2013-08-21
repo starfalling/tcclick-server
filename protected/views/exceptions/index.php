@@ -16,9 +16,6 @@ echo TCClickUtil::selector($selector_params);
 
 
 <script>$(function(){
-	function getURLParameter(name) {
-		return decodeURI((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]);
-	}
 	render_chart('daily_exceptions_count_chart','',root_url+'exceptions/AjaxDailyCount', {}, false,
 			{tooltip: {formatter: function() { return this.x +' 出错 '+ this.y + ' 次';}} } );
 	var version_id = getURLParameter("version_id");
@@ -62,4 +59,15 @@ echo TCClickUtil::selector($selector_params);
 		$(html).submit();
 		return false;
 	});
+
+
+	if(external_site_id){
+		$('#exceptions_list_block').on('DOMNodeInserted', function(){
+		  $(".block td a").each(function(){
+			  if(this.href.indexOf('external_site_id=')!=-1) return;
+			  if(this.href.indexOf('?')!=-1) this.href += "&external_site_id="+external_site_id;
+			  else this.href += "?external_site_id="+external_site_id;
+			});
+		});
+	}
 });</script>

@@ -53,7 +53,7 @@ if(!$errorInfo){
 	$sql = "select sum(count) from {counter_daily_active_jailbroken} 
 	where date>='$start_date' and date <='$end_date'";
 	$all_count = TCClick::app()->db->query($sql)->fetchColumn(0);
-	$jailbroken_percent = $jailbroken_count / $all_count;
+	if($all_count) $jailbroken_percent = $jailbroken_count / $all_count;
 }
 
 ?>

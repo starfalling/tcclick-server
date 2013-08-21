@@ -20,7 +20,7 @@ class Network{
 		}else{
 			self::$all_networks = false;
 		}
-		if(self::$all_networks === false){
+		if(self::$all_networks === false || self::$all_networks === null){
 			self::$all_networks = array();
 			$sql = "select * from {networks}";
 			$stmt = TCClick::app()->db->query($sql);
