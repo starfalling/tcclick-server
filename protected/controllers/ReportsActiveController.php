@@ -2,7 +2,10 @@
 include_once "ReportsController.php";
 class ReportsActiveController extends  Controller{
 	public function filters(){
-		return array("AdminRequiredFilter");
+		return array(
+				"AdminRequiredFilter",
+				"ExternalAccessFilter - index",
+		);
 	}
 	
 	

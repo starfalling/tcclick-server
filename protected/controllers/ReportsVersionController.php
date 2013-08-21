@@ -3,7 +3,10 @@
 include_once "ReportsController.php";
 class ReportsVersionController extends Controller{
 	public function filters(){
-		return array("AdminRequiredFilter");
+		return array(
+				"AdminRequiredFilter",
+				"ExternalAccessFilter - index",
+		);
 	}
 	
 	

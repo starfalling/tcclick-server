@@ -2,6 +2,7 @@
 <div class="block" style="padding:10px 20px">
 	<a id='create_external_code' href='javascript:void(0)'>创建访问码</a>
 	<p>外部访问码用于把数据开放给其他 tcclick 站，以便将多个 tcclick 统计站集中在一起进行访问。</p>
+	<p>您的tcclick站的url地址为 <?php echo 'http://', $_SERVER['HTTP_HOST'], TCClick::app()->root_url?></p>
 	<table>
 		<thead><tr>
 			<th style='width:40px'>编号</th>

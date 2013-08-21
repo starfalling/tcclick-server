@@ -6,13 +6,13 @@ class EventsController extends  Controller{
 	}
 
 	public function actionIndex(){
-		$this->render('index');
+		$this->renderCompatibleWithExternalSite('index');
 	}
 	
 	public function actionView(){
 		$event = Event::loadById($_GET['id']);
 		if($event){
-			$this->render('view', array('event'=>$event));
+			$this->renderCompatibleWithExternalSite('view', array('event'=>$event));
 		}else{
 			$this->redirect(TCClick::app()->root_url . 'events');
 		}
@@ -62,7 +62,8 @@ class EventsController extends  Controller{
 	  foreach($daily_count_with_dates as $key=>$count_data){
 	  	$daily_count = array();
 	  	foreach($count_data as $date=>$count) {
-	  		$daily_count[] = round($count/$all_count[$date],5);
+	  		if($all_count[$date]) $daily_count[] = round($count/$all_count[$date],5);
+	  		else $daily_count[] = 0;
 	  	}
 	  	$json['stats'][] = array("data"=>$daily_count, "name"=>EventName::nameOf($key));
 	  }

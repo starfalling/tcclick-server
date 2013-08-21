@@ -75,6 +75,21 @@ class ExternalCode{
 		}
 	}
 	
+	/**
+	 * @param string $code
+	 * @return ExternalCode
+	 */
+	public static function findByCode($code){
+		$sql = "select * from {external_codes} where code=:code";
+		$stmt = TCClick::app()->db->query($sql, array(':code'=>$code));
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		if($row){
+			$m = new self();
+			$m->initWithDbRow($row);
+			return $m;
+		}
+	}
+	
 	public static function deleteById($id){
 		$sql = "delete from {external_codes} where id=:id";
 		TCClick::app()->db->execute($sql, array(':id'=>$id));

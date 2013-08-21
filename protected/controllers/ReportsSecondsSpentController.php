@@ -3,13 +3,16 @@
 include_once "ReportsController.php";
 class ReportsSecondsSpentController extends Controller{
 	public function filters(){
-		return array("AdminRequiredFilter");
+		return array(
+				"AdminRequiredFilter",
+				"ExternalAccessFilter - index",
+		);
 	}
 	
 	
 
 	public function actionIndex(){
-		$this->render("index");
+		$this->renderCompatibleWithExternalSite("index");
 	}
 	
 	public function actionAjaxPerOpen(){

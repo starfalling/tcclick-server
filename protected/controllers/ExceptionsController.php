@@ -8,7 +8,7 @@ class ExceptionsController extends  Controller{
 	
 	
   public function actionIndex(){
-    $this->render('index');
+    $this->renderCompatibleWithExternalSite('index');
   }
   
   public function actionView(){
@@ -16,7 +16,7 @@ class ExceptionsController extends  Controller{
   	$sql = "select * from {exceptions} where id={$_GET['id']}";
   	$exception = TCClick::app()->db->query($sql)->fetch(PDO::FETCH_ASSOC);
   	if(!$exception) return header("Location: ".TCClick::app()->root_url."exceptions");
-  	$this->render('view', array("exception"=>$exception));
+  	$this->renderCompatibleWithExternalSite('view', array("exception"=>$exception));
   }
   
   public function actionAjaxListUnLocated(){

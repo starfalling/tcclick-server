@@ -1,13 +1,16 @@
 <?php
 class ReportsLaunchController extends Controller{
 	public function filters(){
-		return array("AdminRequiredFilter");
+		return array(
+				"ExternalAccessFilter - index",
+				"AdminRequiredFilter",
+		);
 	}
 	
 	
   
   public function actionIndex(){
-    $this->render('index');
+    $this->renderCompatibleWithExternalSite('index');
   }
 
   public function actionAjaxDayopenTimes(){

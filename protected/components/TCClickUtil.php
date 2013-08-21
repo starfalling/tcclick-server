@@ -157,9 +157,11 @@ class TCClickUtil{
 				}
 				if($v === false) continue;
 				if($v === null) continue;
-				$url .= "&{$k_encoded}={$v_encoded}";
+				if($url[strlen($url)-1] == '?')  $url .= "{$k_encoded}={$v_encoded}";
+				else $url .= "&{$k_encoded}={$v_encoded}";
 			}
 		}
+		if($url[strlen($url)-1]=='?') $url = substr($url, 0, strlen($url)-1);
 		return $url;
 	}
 	

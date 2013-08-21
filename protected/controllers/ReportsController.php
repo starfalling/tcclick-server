@@ -5,6 +5,7 @@ class ReportsController extends Controller{
 		return array(
 				"LoginRequiredFilter",
 				"AdminRequiredFilter + AjaxDailyOpenTimes, AjaxDailySecondsSpentPerOpen",
+				"ExternalAccessFilter - index"
 		);
 	}
 	
@@ -13,7 +14,7 @@ class ReportsController extends Controller{
 	public function actionIndex(){
 		$dbMigrateUtil = new DbMigrateUtil();
 		$dbMigrateUtil->upgrade();
-		$this->render("index");
+		$this->renderCompatibleWithExternalSite("index");
 	}
 	
 	
