@@ -15,10 +15,12 @@ class ExternalAccessFilter extends Filter{
 				}else{
 					$url = $root_url . $request_uri . "&external_code=" . $site->code;
 				}
-				header("Content-type: application/json;charset=utf-8");
-				$json = json_decode(HttpUtil::curl_get($url));
-				if($json) echo json_encode($json);
-				else echo "{}";
+				$html = HttpUtil::curl_get($url);
+				$json = json_decode($html);
+				if($json){
+					header("Content-type: application/json;charset=utf-8");
+					echo json_encode($json);
+				} else echo $html;
 			}
 			exit;
 		}

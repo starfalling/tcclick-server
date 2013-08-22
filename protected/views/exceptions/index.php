@@ -68,7 +68,7 @@ echo TCClickUtil::selector($selector_params);
 	
 	if(external_site_id){
 		$('#exceptions_list_block').on('DOMNodeInserted', function(){
-		  $(".block td a").each(function(){
+		  $("#exceptions_list_block a").each(function(){
 			  if(this.href.indexOf('external_site_id=')!=-1) return;
 			  if(this.href.indexOf('?')!=-1) this.href += "&external_site_id="+external_site_id;
 			  else this.href += "?external_site_id="+external_site_id;
