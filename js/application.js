@@ -5,6 +5,19 @@ function getURLParameter(name) {
 }
 var external_site_id = getURLParameter('external_site_id');
 if(external_site_id=='null') external_site_id = null;
+if(external_site_id){
+  // change the default jquery load function to fit with external_site_id param
+  var old_load_function = $.prototype.load;
+  var new_load_function = function(a, b, c){
+    // Load data from the server and place the returned HTML into the matched element.
+    if(typeof a === 'string' && a.indexOf('external_site_id=')==-1){
+      if(a.indexOf('?')!=-1) a += "&external_site_id="+external_site_id;
+      else a += "?external_site_id="+external_site_id;
+    }
+    old_load_function.call(this, a, b, c);
+  };
+  $.prototype.load = new_load_function;
+}
 
 
 $(function(){
