@@ -3,7 +3,10 @@ include_once "ReportsController.php";
 
 class ExceptionsController extends  Controller{
 	public function filters(){
-		return array("LoginRequiredFilter - AjaxListUnLocated,AjaxView,AjaxSetLocatedContent");
+		return array(
+				"LoginRequiredFilter - AjaxListUnLocated,AjaxView,AjaxSetLocatedContent",
+				"ExternalAccessFilter - index, view, update",
+		);
 	}
 	
 	

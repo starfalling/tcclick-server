@@ -60,7 +60,7 @@ echo TCClickUtil::selector($selector_params);
 	if(external_site_id){
 	  exception_list_block_url += "external_site_id="+external_site_id+'&';
 	}
-	if(version_id){
+	if(version_id && version_id!='null'){
 	  exception_list_block_url += "version_id="+version_id;
 	}
 	$("#exceptions_list_block").load(exception_list_block_url);

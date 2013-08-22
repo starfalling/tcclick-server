@@ -2,7 +2,10 @@
 
 class EventsController extends  Controller{
 	public function filters(){
-		return array("AdminRequiredFilter");
+		return array(
+				"AdminRequiredFilter",
+				"ExternalAccessFilter - index, view",
+		);
 	}
 
 	public function actionIndex(){

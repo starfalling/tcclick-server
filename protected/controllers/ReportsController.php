@@ -5,7 +5,7 @@ class ReportsController extends Controller{
 		return array(
 				"LoginRequiredFilter",
 				"AdminRequiredFilter + AjaxDailyOpenTimes, AjaxDailySecondsSpentPerOpen",
-				"ExternalAccessFilter - index"
+				"ExternalAccessFilter - index",
 		);
 	}
 	
