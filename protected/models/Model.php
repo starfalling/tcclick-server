@@ -47,7 +47,7 @@ class Model{
 		static $readable_names = array(
 				"Apple::iPad1,1"=>"iPad1", "Apple::iPad1,2"=>"iPad1", "Apple::iPad1,3"=>"iPad1", "Apple::iPad1,4"=>"iPad1",
 				"Apple::iPad2,1"=>"iPad2", "Apple::iPad2,2"=>"iPad2", "Apple::iPad2,3"=>"iPad2", "Apple::iPad2,4"=>"iPad2",
-				"Apple::iPad2,5"=>"iPad2", "Apple::iPad2,6"=>"iPad2", "Apple::iPad2,7"=>"iPad2", 
+				"Apple::iPad2,5"=>"iPad mini", "Apple::iPad2,6"=>"iPad mini", "Apple::iPad2,7"=>"iPad mini", 
 				"Apple::iPad3,1"=>"iPad3", "Apple::iPad3,2"=>"iPad3", "Apple::iPad3,3"=>"iPad3", "Apple::iPad3,4"=>"iPad3",
 				"Apple::iPad3,5"=>"iPad3", "Apple::iPad3,6"=>"iPad3", "Apple::iPad3,7"=>"iPad3",
 				"Apple::iPhone1,1"=>"iPhone", 
