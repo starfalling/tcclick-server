@@ -13,7 +13,10 @@
 		<tbody><?php foreach($sites as $i=>$site):?>
 			<tr>
 				<td><?php echo $site->id?></td>
-				<td><?php echo $site->url?>&nbsp;&nbsp;&nbsp;(<?php echo $site->is_admin?'管理员':'渠道账号'?>)</td>
+				<td>
+					<a href="<?php echo $site->url?>" target='_blank'><?php echo $site->name?></a>
+					&nbsp;&nbsp;(<?php echo $site->is_admin?'管理员':'渠道账号'?>)
+				</td>
 				<td style='text-align:center;padding:0;'><?php echo $site->getUser()->username?></td>
 				<td style='text-align:center;padding:0;'>
 					<a href='<?php echo TCClick::app()->root_url, 'externalSites/', $site->id, '/update'?>'>编辑</a>
