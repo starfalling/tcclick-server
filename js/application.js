@@ -116,6 +116,10 @@ $(function(){
       if(this.href.indexOf('?')!=-1) this.href += "&external_site_id="+external_site_id;
       else this.href += "?external_site_id="+external_site_id;
     });
+    $(".select_list li a").each(function(){
+      if(this.href.indexOf('?')!=-1) this.href += "&external_site_id="+external_site_id;
+      else this.href += "?external_site_id="+external_site_id;
+    });
   }
 });
 

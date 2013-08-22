@@ -18,12 +18,6 @@ echo TCClickUtil::selector($selector_params);
 <script>$(function(){
 	render_chart('daily_exceptions_count_chart','',root_url+'exceptions/AjaxDailyCount', {}, false,
 			{tooltip: {formatter: function() { return this.x +' 出错 '+ this.y + ' 次';}} } );
-	var version_id = getURLParameter("version_id");
-	if(version_id){
-		$("#exceptions_list_block").load(root_url+'exceptions/AjaxExceptionsListBlock?version_id='+version_id);
-	}else{
-		$("#exceptions_list_block").load(root_url+'exceptions/AjaxExceptionsListBlock');
-	}
 
 	$(document).on("click", ".exceptions_list tr", function(){
 		if($(this).attr("id") == undefined) return;
@@ -61,6 +55,17 @@ echo TCClickUtil::selector($selector_params);
 	});
 
 
+	var version_id = getURLParameter("version_id");
+	var exception_list_block_url = root_url+'exceptions/AjaxExceptionsListBlock?';
+	if(external_site_id){
+	  exception_list_block_url += "external_site_id="+external_site_id+'&';
+	}
+	if(version_id){
+	  exception_list_block_url += "version_id="+version_id;
+	}
+	$("#exceptions_list_block").load(exception_list_block_url);
+
+	
 	if(external_site_id){
 		$('#exceptions_list_block').on('DOMNodeInserted', function(){
 		  $(".block td a").each(function(){

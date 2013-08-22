@@ -140,8 +140,10 @@ class TCClickUtil{
 	 * @param string $params 参数
 	 */
 	public static function createUrl($path=NULL, $params=NULL){
-		if(!$path) $url = trim($_SERVER['REQUEST_URI'], '&');
-		else $url = $path;
+		if(!$path){
+			$url = trim($_SERVER['REQUEST_URI'], '&');
+			$url = preg_replace('/external_code=[^&]+&?/', '', $url);
+		} else $url = $path;
 		if($params){
 			$need_check_param_already_exists = true;
 			if(strpos($url, '?')===false){
