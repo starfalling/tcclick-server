@@ -66,7 +66,7 @@ class Controller{
 			echo $content;
 			return;
 		}else
-			$content = $this->renderPartial($view, array(), true);
+			$content = $this->renderPartial($view, $params, true);
 		$this->renderPartial('/layouts/' . $this->layout, array("content"=>$content), $return);
 	}
 	
