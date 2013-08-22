@@ -16,6 +16,8 @@
 				<td><?php echo $site->url?>&nbsp;&nbsp;&nbsp;(<?php echo $site->is_admin?'管理员':'渠道账号'?>)</td>
 				<td style='text-align:center;padding:0;'><?php echo $site->getUser()->username?></td>
 				<td style='text-align:center;padding:0;'>
+					<a href='<?php echo TCClick::app()->root_url, 'externalSites/', $site->id, '/update'?>'>编辑</a>
+					&nbsp;&nbsp;
 					<a href='javascript:void(0)' id='<?php echo $site->id?>' class='delete'>删除</a>
 				</td>
 				<td><?php echo $site->created_at?></td>

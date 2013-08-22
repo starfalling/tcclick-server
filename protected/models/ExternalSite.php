@@ -74,6 +74,7 @@ class ExternalSite{
 		$this->name = $row['name'];
 		$this->url = $row['url'];
 		$this->created_at = $row['created_at'];
+		$this->is_admin = $row['is_admin'] == 1;
 	}
 	
 	public function save(){

@@ -52,6 +52,27 @@ class ExternalSitesController extends  Controller{
 		$this->render('create', array('site'=>$site, 'error_message'=>$error_message));
 	}
 	
+	public function actionUpdate(){
+		$site = ExternalSite::findById($_GET['id']);
+		if(!$site) return header('Location: '.TCClick::app()->root_url.'externalSites/index');
+		$error_message = null;
+		if($_SERVER['REQUEST_METHOD'] == 'POST'){
+			$site->user_id = User::current()->id;
+			$site->name = $_POST['name'];
+			$site->url = $_POST['url'];
+			$site->code = $_POST['code'];
+			if($site->url[strlen($site->url)-1]!='/') $site->url .= '/';
+			$info = $this->getInfoOfExternalCode($site->code, $site->url);
+			if($info && $info->code==$site->code){
+				$site->is_admin = $info->is_admin;
+				$site->save();
+				header('Location: '.TCClick::app()->root_url.'externalSites/index');
+				return;
+			}else $error_message = "无法获取到外站信息，请确认信息填写正确";
+		}
+		$this->render('update', array('site'=>$site, 'error_message'=>$error_message));
+	}
+	
 	private function getInfoOfExternalCode($code, $root_url){
 		$url = $root_url . 'externalCodes/ajaxInfo?code=' . $code;
 		return json_decode(HttpUtil::curl_get($url));
