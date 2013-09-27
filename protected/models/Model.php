@@ -56,6 +56,8 @@ class Model{
 				"Apple::iPhone3,1"=>"iPhone4",    "Apple::iPhone3,2"=>"iPhone4", "Apple::iPhone3,3"=>"iPhone4",
 				"Apple::iPhone4,1"=>"iPhone4S",
 				"Apple::iPhone5,1"=>"iPhone5", "Apple::iPhone5,2"=>"iPhone5",
+				"Apple::iPhone5,3"=>"iPhone5c", "Apple::iPhone5,4"=>"iPhone5c",
+				"Apple::iPhone6,1"=>"iPhone5s", "Apple::iPhone6,2"=>"iPhone5s",
 				"Apple::iPod1,1"=>"iTouch1",
 				"Apple::iPod2,1"=>"iTouch2",
 				"Apple::iPod3,1"=>"iTouch3",
