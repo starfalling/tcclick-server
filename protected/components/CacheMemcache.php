@@ -26,33 +26,33 @@ class CacheMemcache{
 	
 	
 	public function get($key, $default=null){
-		$value = $this->mmc->get($key);
+		$value = $this->mmc->get(MEMCACHE_KEY_PREFIX.$key);
 		return $value===false ? $default : $value;
 	}
 	
 	public function set($key, $value, $expire=0){
 		if($this->is_memcached)
-			return $this->mmc->set($key, $value, $expire);
+			return $this->mmc->set(MEMCACHE_KEY_PREFIX.$key, $value, $expire);
 		else 
-			return $this->mmc->set($key, $value, 0, $expire);
+			return $this->mmc->set(MEMCACHE_KEY_PREFIX.$key, $value, 0, $expire);
 	}
 	
 	public function delete($key){
-		return $this->mmc->delete($key);
+		return $this->mmc->delete(MEMCACHE_KEY_PREFIX.$key);
 	}
 	
 	public function add($key, $value, $expire=0){
 		if($this->is_memcached)
-			return $this->mmc->add($key, $value, $expire);
+			return $this->mmc->add(MEMCACHE_KEY_PREFIX.$key, $value, $expire);
 		else
-			return $this->mmc->add($key, $value, 0, $expire);
+			return $this->mmc->add(MEMCACHE_KEY_PREFIX.$key, $value, 0, $expire);
 	}
 	
 	public function incr($key, $value=1, $create=false){
-		$result = $this->mmc->increment($key, $value);
+		$result = $this->mmc->increment(MEMCACHE_KEY_PREFIX.$key, $value);
 		if($result === false && $create){
-			$this->add($key, 0);
-			$result = $this->mmc->increment($key, $value);
+			$this->add(MEMCACHE_KEY_PREFIX.$key, 0);
+			$result = $this->mmc->increment(MEMCACHE_KEY_PREFIX.$key, $value);
 		}
 		return $result;
 	}

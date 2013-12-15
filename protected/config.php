@@ -19,6 +19,7 @@ define("MYSQL_PERSISTENT", true);
 define("MYSQL_TABLE_PREFIX", "tcclick_");
 
 
+define("MEMCACHE_KEY_PREFIX", "");
 define("MEMCACHE_HOST", "localhost");
 define("MEMCACHE_PORT", 12006);
 
