@@ -28,7 +28,8 @@ TCClick::app()->cache->delete(KEY_LOADING_CLIENT_ACTIVIES_LOCK);
 
 
 foreach($rows as $row){
-	$data_uncompressed = gzuncompress($row['data_compressed']);
+	$data_uncompressed = @gzuncompress($row['data_compressed']);
+	if(!$data_uncompressed) $data_uncompressed = @gzinflate($row['data_compressed']);
 	if(!$data_uncompressed) continue;
 
 	$analyzer = new Analyzer($row['server_timestamp'], intval($row['ip']), $data_uncompressed);
