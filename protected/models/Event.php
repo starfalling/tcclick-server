@@ -18,7 +18,7 @@ class Event{
 	}
 	
 	public static function idFor($name_id){
-		$sql = "insert into {events} (name_id) values (:name_id)
+		$sql = "insert into {events} (name_id, alias_id) values (:name_id, 0)
 		on duplicate key update id=last_insert_id(id)";
 		TCClick::app()->db->execute($sql, array(':name_id'=>$name_id));
 		return TCClick::app()->db->lastInsertId();
