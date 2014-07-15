@@ -92,6 +92,13 @@ class Analyzer{
 			}
 		}
 		
+		if(isset($this->json->device->udid)){
+			if(!preg_match('/^[0-9a-fA-F]{32}$/', $this->json->device->udid)){
+				// udid 不符合md5格式
+				$this->json->device->udid = md5($this->json->device->udid);
+			}
+		}
+		
 		foreach($this->listeners as $listener){
 			$listener->execute($this);
 		}
