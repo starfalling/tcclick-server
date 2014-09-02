@@ -27,14 +27,20 @@ class DBConnection{
 	 */
 	private function connectSlave(){
 		if(!$this->db_slave){
-			$options = array(PDO::ATTR_PERSISTENT, MYSQL_PERSISTENT);
-			if(MYSQL_DSN_MASTER == MYSQL_DSN_SLAVE){
-				if(!$this->db_master){
-					$this->db_master = new PDO(MYSQL_DSN_MASTER, MYSQL_USER_MASTER, MYSQL_PASS_MASTER, $options);
+			try{
+				$options = array(PDO::ATTR_PERSISTENT, MYSQL_PERSISTENT);
+				if(MYSQL_DSN_MASTER == MYSQL_DSN_SLAVE){
+					if(!$this->db_master){
+						$this->db_master = new PDO(MYSQL_DSN_MASTER, MYSQL_USER_MASTER, MYSQL_PASS_MASTER, $options);
+					}
+					$this->db_slave = $this->db_master;
+				}else{
+					$this->db_slave = new PDO(MYSQL_DSN_SLAVE, MYSQL_USER_SLAVE, MYSQL_PASS_SLAVE, $options);
 				}
-				$this->db_slave = $this->db_master;
-			}else{
-				$this->db_slave = new PDO(MYSQL_DSN_SLAVE, MYSQL_USER_SLAVE, MYSQL_PASS_SLAVE, $options);
+			}catch(PDOException $e){
+				TCClick::error($e->getMessage()."\n".$e->getTraceAsString());
+				echo "Connect database failed, please contact your administrator for more information.";
+				exit;
 			}
 		}
 	}
