@@ -2,7 +2,7 @@
 
 include_once dirname(dirname(__FILE__)) . '/protected/init.php';
 
-$qqwry_filepath = dirname(__DIR__) . "/protected/data/QQWry.Dat";
+$qqwry_filepath = dirname(__DIR__) . "/protected/data/qqwry.dat";
 $seeker = new IpLocationSeekerBinary($qqwry_filepath);
 $seeker->saveToTCClickMysql();
 
