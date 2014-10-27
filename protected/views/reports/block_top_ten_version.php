@@ -3,24 +3,24 @@ $version_ids = array();
 $today = date("Y-m-d");
 $yesterday = date("Y-m-d", time()-86400);
 $today_new = array(); $yesterday_new = array();
-$sql = "select * from {counter_daily_new_version} where date in ('$today', '$yesterday')
-order by `count` desc";
+$sql = "select * from {counter_daily_new_version} where date in ('$today', '$yesterday')";
 foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 	if($row['date'] == $today){
 		$today_new[$row['version_id']] = $row['count'];
 	}else{
 		$yesterday_new[$row['version_id']] = $row['count'];
-		if(count($version_ids) < 10) $version_ids[] = $row['version_id'];
 	}
 }
 
 $today_active = array(); $yesterday_active = array();
-$sql = "select * from {counter_daily_active_version} where date in ('$today', '$yesterday')";
+$sql = "select * from {counter_daily_active_version} where date in ('$today', '$yesterday')
+order by `count` desc";
 foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 	if($row['date'] == $today){
 		$today_active[$row['version_id']] = $row['count'];
 	}else{
 		$yesterday_active[$row['version_id']] = $row['count'];
+		if(count($version_ids) < 10) $version_ids[] = $row['version_id'];
 	}
 }
 ?>
