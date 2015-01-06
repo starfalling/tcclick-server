@@ -56,7 +56,7 @@ class Analyzer{
 		$this->listeners[] = new AnalyzeListenerVersionUpdateDevice();
 		$this->listeners[] = new AnalyzeListenerActiveDevice();
 		$this->listeners[] = new AnalyzeListenerUsage();
-		$this->listeners[] = new AnalyzeListenerException();
+// 		$this->listeners[] = new AnalyzeListenerException();
 		$this->listeners[] = new AnalyzeListenerEvent();
 	}
 
