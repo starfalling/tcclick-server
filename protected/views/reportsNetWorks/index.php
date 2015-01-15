@@ -15,11 +15,15 @@ foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 
 ?>
 <h1>活跃设备的联网方式
-<?php echo TCClickUtil::selector(array(
-		array("label"=>"最近一月", "from"=>date("Y-m-d", time()-86400*30)),
-		array("label"=>"最近两月", "from"=>date("Y-m-d", time()-86400*60)),
-		array("label"=>"最近三月", "from"=>date("Y-m-d", time()-86400*90)),
-		array("label"=>"最近一年", "from"=>date("Y-m-d", time()-86400*365)),
+<?php
+$now = time();
+echo TCClickUtil::selector(array(
+		array("label"=>"昨天", "from"=>date("Y-m-d", $now-86400), "to"=>date("Y-m-d", $now-86400)),
+		array("label"=>"前天", "from"=>date("Y-m-d", $now-86400*2), "to"=>date("Y-m-d", $now-86400*2)),
+		array("label"=>"最近一月", "from"=>date("Y-m-d", $now-86400*30), "to"=>null),
+		array("label"=>"最近两月", "from"=>date("Y-m-d", $now-86400*60), "to"=>null),
+		array("label"=>"最近三月", "from"=>date("Y-m-d", $now-86400*90), "to"=>null),
+		array("label"=>"最近一年", "from"=>date("Y-m-d", $now-86400*365), "to"=>null),
 ))?></h1>
 <div class="block">
 <h3>联网方式分布  <span style="float: right;"><?php echo $start_date?> ~ <?php echo $end_date?> </span>
