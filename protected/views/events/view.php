@@ -3,13 +3,11 @@
 <?php
 $now = time();
 echo TCClickUtil::selector(array(
-		array("label"=>"昨天", "from"=>date("Y-m-d", $now-86400), "to"=>date("Y-m-d", $now-86400)),
-		array("label"=>"前天", "from"=>date("Y-m-d", $now-86400*2), "to"=>date("Y-m-d", $now-86400*2)),
 		array("label"=>"最近一月", "from"=>date("Y-m-d", $now-86400*30), "to"=>null),
 		array("label"=>"最近两月", "from"=>date("Y-m-d", $now-86400*60), "to"=>null),
 		array("label"=>"最近三月", "from"=>date("Y-m-d", $now-86400*90), "to"=>null),
 		array("label"=>"最近一年", "from"=>date("Y-m-d", $now-86400*365), "to"=>null),
-));
+), array('from'=>date("Y-m-d", $now-86400*30)));
 
 $sql= "select * from {event_params} where event_id ={$_GET['id']}";
 $stmt = TCClick::app()->db->query($sql);

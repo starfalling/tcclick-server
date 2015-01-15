@@ -2,13 +2,11 @@
 <?php
 $now = time();
 echo TCClickUtil::selector(array(
-		array("label"=>"昨天", "from"=>date("Y-m-d", $now-86400), "to"=>date("Y-m-d", $now-86400)),
-		array("label"=>"前天", "from"=>date("Y-m-d", $now-86400*2), "to"=>date("Y-m-d", $now-86400*2)),
 		array("label"=>"最近一月", "from"=>date("Y-m-d", $now-86400*30), "to"=>null),
 		array("label"=>"最近两月", "from"=>date("Y-m-d", $now-86400*60), "to"=>null),
 		array("label"=>"最近三月", "from"=>date("Y-m-d", $now-86400*90), "to"=>null),
 		array("label"=>"最近一年", "from"=>date("Y-m-d", $now-86400*365), "to"=>null),
-))?></h1>
+), array('from'=>date("Y-m-d", $now-86400*30)))?></h1>
 
 <div class="block">
 	<h3>时段分析</h3>

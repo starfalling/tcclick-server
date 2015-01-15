@@ -80,7 +80,7 @@ echo TCClickUtil::selector(array(
 		array("label"=>"最近两月", "from"=>date("Y-m-d", $now-86400*60), "to"=>null),
 		array("label"=>"最近三月", "from"=>date("Y-m-d", $now-86400*90), "to"=>null),
 		array("label"=>"最近一年", "from"=>date("Y-m-d", $now-86400*365), "to"=>null),
-))?></h1>
+), array('from'=>date("Y-m-d", $now-86400*30)))?></h1>
 
 <div class="block">
 	<h3>TOP 10 国家分布<span class='right'><?php echo $from?> ~ <?php echo $to?></span></h3>

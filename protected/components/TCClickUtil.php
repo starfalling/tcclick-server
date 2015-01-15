@@ -245,14 +245,18 @@ class TCClickUtil{
 		}
 	}
 	
-	public static function selector($options){
+	public static function selector($options, $default_options=array()){
 		$selected_option_index = 0;
 		foreach($options as $i=>&$option){
 			$label = $option['label'];
 			unset($option['label']);
 			$is_current_option_selected = true;
 			foreach($option as $key=>$value){
-				if($_GET[$key] != $value){
+				if(empty($_GET[$key])){
+					if($default_options[$key] != $value){
+						$is_current_option_selected = false;
+					}
+				}elseif($_GET[$key] != $value){
 					$is_current_option_selected = false;
 				}
 			}
