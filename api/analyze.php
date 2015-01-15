@@ -13,7 +13,7 @@ while(true){
 	usleep(10*1000);
 }
 
-$sql = "select * from {client_activities} order by id limit 10";
+$sql = "select * from {client_activities} order by id limit 1000";
 $stmt = TCClick::app()->db->query($sql);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if(!empty($rows)){
