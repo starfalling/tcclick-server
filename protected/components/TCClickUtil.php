@@ -163,6 +163,7 @@ class TCClickUtil{
 				else $url .= "&{$k_encoded}={$v_encoded}";
 			}
 		}
+		$url = preg_replace('&+', '&', $url);
 		$url = str_replace('?&', '?', $url);
 		$url = trim($url, '?&');
 		return $url;
