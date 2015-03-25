@@ -32,6 +32,17 @@ class ExternalSitesController extends  Controller{
 		header('Location: '.$_SERVER['HTTP_REFERER']);
 	}
 	
+	public function actionRecover(){
+		if($_SERVER['REQUEST_METHOD'] == 'POST'){
+			$site = ExternalSite::findById($_POST['id']);
+			if($site && ($site->user_id==User::current()->id || User::current()->isAdmin())){ 
+				// user can only delete his own external codes, or administrator can delete any code
+				$site->recover();
+			}
+		}else header('Location: '.TCClick::app()->root_url.'externalSites/index');
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+	}
+	
 	public function actionCreate(){
 		$site = new ExternalSite();
 		$error_message = null;
@@ -40,6 +51,7 @@ class ExternalSitesController extends  Controller{
 			$site->name = $_POST['name'];
 			$site->url = $_POST['url'];
 			$site->code = $_POST['code'];
+			$site->weight = intval($_POST['weight']);
 			if($site->url[strlen($site->url)-1]!='/') $site->url .= '/';
 			$info = $this->getInfoOfExternalCode($site->code, $site->url);
 			if($info && $info->code==$site->code){
@@ -61,6 +73,7 @@ class ExternalSitesController extends  Controller{
 			$site->name = $_POST['name'];
 			$site->url = $_POST['url'];
 			$site->code = $_POST['code'];
+			$site->weight = intval($_POST['weight']);
 			if($site->url[strlen($site->url)-1]!='/') $site->url .= '/';
 			$info = $this->getInfoOfExternalCode($site->code, $site->url);
 			if($info && $info->code==$site->code){

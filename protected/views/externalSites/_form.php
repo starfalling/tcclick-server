@@ -11,6 +11,10 @@
 		<label for='form_url'>URL地址：</label>
 		<input id='form_url' name="url" size="60" value='<?php echo $site->url?>'/>
 	</div>
+	<div class="row">
+		<label for='form_code'>排序权重：</label>
+		<input id='form_code' name="weight" size="10" value='<?php echo $site->weight?>' placeholder='数字越小，排序越靠前'/>
+	</div>
 	<div class="row submit">
 		<input type="submit" value="提交"/>
 	</div>

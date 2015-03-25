@@ -6,7 +6,7 @@ pre{overflow:auto;}
 a{text-decoration:none;color:#4180B6;}
 a:hover{text-decoration:underline;color:#c00;}
 
-form .row{margin:10px 0 0 0;}
+form .row{margin:10px 0 0 0;overflow:hidden;zoom:1;}
 form .row label{float:left;display:block;width:60px;text-align:right;line-height:30px;}
 form .submit{padding-left:80px;margin-top:20px;}
 

@@ -6,7 +6,7 @@
  * @author York.Gu <gyq5319920@gmail.com>
  */
 class DbMigrateUtil{
-	const LATEST_DB_VERSION = 3;
+	const LATEST_DB_VERSION = 4;
 	
 	
 	public function upgrade(){
@@ -66,6 +66,14 @@ class DbMigrateUtil{
 				`created_at` timestamp not null default current_timestamp,
 				unique key `code`(`code`)
 		)engine myisam character set utf8";
+		TCClick::app()->db->execute($sql);
+	}
+	
+	private function upgrade_4(){
+		$sql = "alter table {external_sites} 
+				add column status tinyint not null default 0";
+		$sql = "alter table {external_sites} 
+				add column weight int not null default 0";
 		TCClick::app()->db->execute($sql);
 	}
 	
