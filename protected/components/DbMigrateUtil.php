@@ -72,6 +72,7 @@ class DbMigrateUtil{
 	private function upgrade_4(){
 		$sql = "alter table {external_sites} 
 				add column status tinyint not null default 0";
+		TCClick::app()->db->execute($sql);
 		$sql = "alter table {external_sites} 
 				add column weight int not null default 0";
 		TCClick::app()->db->execute($sql);
