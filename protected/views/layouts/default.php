@@ -1,4 +1,4 @@
-<?php $this->registerScriptFile("Highcharts-2.2.5/highcharts.js");?>
+<?php $this->registerScriptFile("Highcharts-4.1.9/highcharts.js");?>
 <?php $this->registerScriptFile("jquery.blockUI.js");?>
 <?php $this->registerScriptFile("application.js");?>
 <?php $this->registerScriptFile("dhtmlgoodies_calendar.js")?>
