@@ -34,7 +34,7 @@ class Device{
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		if($row){ // 这是一个老用户
 			$this->id = $row['id'];
-			if($this->version_id > $row['version_id']){ // 这是一个升级用户
+			if($this->version_id != $row['version_id']){ // 这是一个升级或者降级的用户
 				$this->is_update = true;
 				$sql = "update {devices} set version_id={$this->version_id} where id={$this->id}";
 				TCClick::app()->db->execute($sql);
