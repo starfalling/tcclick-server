@@ -10,6 +10,7 @@ echo TCClickUtil::selector(array(
 
 <div class="block">
 	<h3>趋势</h3>
+	<a class="download_excel" href="javascript:void(0)">Excel 下载</a>
 	<ul class="tabs">
 		<li id="tab_daily_new_devices" class="tab current">新增设备</li>
 		<li id="tab_daily_active_devices" class="tab">活跃设备</li>

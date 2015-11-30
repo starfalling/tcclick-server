@@ -121,6 +121,7 @@ foreach(TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC) as $row){
 
 <div class="block">
 	<h3>趋势分析</h3>
+	<a class="download_excel" href="javascript:void(0)">Excel 下载</a>
 	<ul class="tabs">
 		<li id="" class="tab current">新增设备</li>
 		<li id="tab_daily_all_devices" class="tab">累计设备</li>

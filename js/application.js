@@ -329,3 +329,63 @@ function Create_table(div_id, data_url){
 			});
 	$("#"+div_id+"").append("</table>");
 }
+
+
+$(function(){
+	// 把图表数据下载为一个 excel 表格文件
+	function downloadReportExcel(data){
+		var html = '<?xml version="1.0"?>';
+		html += '<ss:Workbook xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+
+		html += '<ss:Styles>';
+		html += '<ss:Style ss:ID="align_center"><ss:Alignment ss:Horizontal="Center" ss:Vertical="Center" /></ss:Style>';
+		html += '</ss:Styles>';
+
+		html += '<ss:Worksheet ss:Name="' + data.title.text + '">';
+		html += '<ss:Table>';
+		html += '<ss:Column ss:Width="60"/>';
+		for(var i=0; i<data.series.length; i++){
+			html += '<ss:Column ss:Width="150"/>';
+		}
+		html += '<ss:Row ss:Height="25">';
+		html += '<ss:Cell ss:StyleID="align_center"><ss:Data ss:Type="String">日期</ss:Data></ss:Cell>';
+		for(var i=0; i<data.series.length; i++){
+			html += '<ss:Cell ss:StyleID="align_center"><ss:Data ss:Type="String">'+data.series[i].name+'</ss:Data></ss:Cell>';
+		}
+		html += '</ss:Row>';
+
+		// 输出每行的数据
+		for(var i=data.xAxis.categories.length-1; i>=0; i--){
+			html += '<ss:Row ss:Height="22">';
+			html += '<ss:Cell ss:StyleID="align_center"><ss:Data ss:Type="String">'+data.xAxis.categories[i]+'</ss:Data></ss:Cell>';
+			for(var j=0; j<data.series.length; j++){
+				html += '<ss:Cell ss:StyleID="align_center"><ss:Data ss:Type="Number">'+data.series[j].data[i]+'</ss:Data></ss:Cell>';
+			}
+			html += '</ss:Row>';
+		}
+
+		html += '</ss:Table>';
+		html += '</ss:Worksheet>';
+		html += '</ss:Workbook>';
+
+		var url = "data:application/vnd.ms-excel;charset=utf-8,"+encodeURIComponent(html);
+		var a = document.createElement('a');
+		a.setAttribute('href', url);
+		a.setAttribute('download', data.title.text+".xls");
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	}
+
+	$(document).on('click', 'a.download_excel', function(e){
+		var chart_id = $(".panels .panel::visible", $(this).parent()).attr("id");
+		var chart_cache_id = 'tcclick_' + chart_id;
+		var cached_data = $('#'+chart_id).data(chart_cache_id);
+		if(cached_data) {
+			if(!cached_data.title.text || cached_data.title.text==""){
+				cached_data.title.text = $(".tabs .current", $(this).parent()).text();
+			}
+			downloadReportExcel(cached_data);
+		}
+	});
+});

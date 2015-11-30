@@ -9,6 +9,7 @@ echo TCClickUtil::selector(array(
 ), array('from'=>date("Y-m-d", $now-86400*30)))?></h1>
 <div class="block">
   <h3>活跃设备趋势</h3>
+	<a class="download_excel" href="javascript:void(0)">Excel 下载</a>
   <ul class="tabs">
     <li id="" class="tab current">日活跃设备</li>
     <li id="tab_active_week" class="tab">周活跃设备</li>
