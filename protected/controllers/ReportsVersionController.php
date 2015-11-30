@@ -34,7 +34,11 @@ class ReportsVersionController extends Controller{
 		foreach($daily_count_with_dates as $version_id=>$version_data){
 			$daily_count = array();
 			foreach($version_data as $date=>$count) $daily_count[] = $count;
-			$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id));
+			if(count($json['stats']) >= 5) {
+				$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id),"visible"=>false);
+			}else{
+				$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id));
+			}
 		}
 		$json['dates'] = ReportsController::datesArrayForJsonOutput($start_date, $end_date);
 		echo json_encode($json);
@@ -59,7 +63,11 @@ class ReportsVersionController extends Controller{
 		foreach($daily_count_with_dates as $version_id=>$version_data){
 			$daily_count = array();
 			foreach($version_data as $date=>$count) $daily_count[] = $count;
-			$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id));
+			if(count($json['stats']) >= 5) {
+				$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id),"visible"=>false);
+			}else{
+				$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id));
+			}
 		}
 		$json['dates'] = ReportsController::datesArrayForJsonOutput($start_date, $end_date);
 		echo json_encode($json);
@@ -84,7 +92,11 @@ class ReportsVersionController extends Controller{
 		foreach($daily_count_with_dates as $version_id=>$version_data){
 			$daily_count = array();
 			foreach($version_data as $date=>$count) $daily_count[] = $count;
-			$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id));
+			if(count($json['stats']) >= 5) {
+				$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id),"visible"=>false);
+			}else{
+				$json['stats'][] = array("data"=>$daily_count, "name"=>Version::nameOf($version_id));
+			}
 		}
 		$json['dates'] = ReportsController::datesArrayForJsonOutput($start_date, $end_date);
 		echo json_encode($json);
