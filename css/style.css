@@ -106,7 +106,7 @@ table.exceptions_list td.title a{font-weight:bold;font-size:12px;color:#4180B6;t
 /* 用表格展示百分比的横向柱状图 */
 .block table tbody td.percent{padding-left:5px;}
 td.percent .label{float:right;}
-td.percent .chart_area{width:560px}
+td.percent .chart_area{width:450px}
 td.percent .chart_area div{background:#7477D5;height:15px;}
 
 /** 留存用户页面 */
