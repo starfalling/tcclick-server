@@ -124,6 +124,7 @@ echo TCClickUtil::selector(array(
       </table>
 		</div>
 	</div>
+	<div style="margin:5px auto;width:99%;">注：多日的数量计算方式为每日相加，对活跃设备数来说，并不是真实数值</div>
 </div>
 
 
@@ -171,4 +172,5 @@ echo TCClickUtil::selector(array(
       </table>
 		</div>
 	</div>
+	<div style="margin:5px auto;width:99%;">注：多日的数量计算方式为每日相加，对活跃设备数来说，并不是真实数值</div>
 </div>
