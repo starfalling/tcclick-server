@@ -92,11 +92,13 @@ echo TCClickUtil::selector(array(
 		<div id="panel_active_devices" class="panel current">
 			<table>
 				<thead>
-					<th width="190">国家</th>
+					<th width="150">国家</th>
+					<th width="150">数量</th>
 					<th>比例</th>
 				</thead>
        <?php if($all_active_count): $i=0;foreach ($world_active_counts as $area_id=>$count):?><tr>
 					<td><?php echo Area::nameof($area_id)?></td>
+				  <td><?php echo $count?></td>
 					<td class='percent'>
 						<div class="label"><?php printf('%.02f', $count/$all_active_count*100)?>%</div>
 						<div class="chart_area"><div style="width:<?php echo $count/$max_world_active_count*100?>%"></div></div>
@@ -107,11 +109,13 @@ echo TCClickUtil::selector(array(
 		<div id="panel_new_devices" class="panel">
 			<table>
 				<thead>
-					<th width="190">国家</th>
+					<th width="150">国家</th>
+					<th width="150">数量</th>
 					<th>比例</th>
 				</thead>
        <?php if($all_new_count): $i=0;foreach ($world_new_counts as $area_id=>$count):?><tr>
 					<td><?php echo Area::nameof($area_id)?></td>
+				  <td><?php echo $count?></td>
 					<td class='percent'>
 						<div class="label"><?php printf('%.02f', $count/$all_new_count*100)?>%</div>
 						<div class="chart_area"><div style="width:<?php echo $count/$max_world_new_count*100?>%"></div></div>
@@ -135,11 +139,13 @@ echo TCClickUtil::selector(array(
 		<div id="panel_active_devices" class="panel current" style="height:auto;">
 			<table>
 				<thead>
-					<th width="190">省份</th>
+					<th width="150">省份</th>
+					<th width="150">数量</th>
 					<th>比例</th>
 				</thead>
        <?php if($china_all_active_count):$i=0;foreach ($province_active_counts as $area_id=>$count):?><tr>
 					<td><?php echo Area::nameof($area_id)?></td>
+				  <td><?php echo $count?></td>
 					<td class='percent'>
 						<div class="label"><?php printf('%.02f', $count/$china_all_active_count*100)?>%</div>
 						<div class="chart_area"><div style="width:<?php echo $count/$max_province_active_count*100?>%"></div></div>
@@ -150,11 +156,13 @@ echo TCClickUtil::selector(array(
 		<div id="panel_new_devices" class="panel" style="height:auto;">
 			<table>
 				<thead>
-					<th width="190">省份</th>
+					<th width="150">省份</th>
+					<th width="150">数量</th>
 					<th>比例</th>
 				</thead>
        <?php if($china_all_new_count): $i=0;foreach ($province_new_counts as $area_id=>$count):?><tr>
 					<td><?php echo Area::nameof($area_id)?></td>
+				  <td><?php echo $count?></td>
 					<td class='percent'>
 						<div class="label"><?php printf('%.02f', $count/$china_all_new_count*100)?>%</div>
 						<div class="chart_area"><div style="width:<?php echo $count/$max_province_new_count*100?>%"></div></div>
