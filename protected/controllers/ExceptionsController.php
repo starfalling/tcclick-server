@@ -79,8 +79,10 @@ class ExceptionsController extends  Controller{
   
   public function actionAjaxDailyCount(){
   	header("Content-type: application/json;charset=utf-8");
-  	$start_date = $_GET['start_date'] ? $_GET['start_date'] : date("Y-m-d", time()-86400*30);
-  	$end_date = $_GET['end_date'] ? $_GET['end_date'] : date("Y-m-d", time());
+		$start_date = date("Y-m-d", time()-86400*30);
+		if(!empty($_GET['start_date'])) $start_date = date('Y-m-d', strtotime($_GET['start_date']));
+		$end_date = date("Y-m-d");
+		if(!empty($_GET['end_date'])) $end_date = date('Y-m-d', strtotime($_GET['end_date']));
   	$version_id = intval($_GET['version_id']);
   	$json = array("stats"=>array(), "result"=>"success");
   	$daily_count_with_dates = ReportsController::generateZeroDailyCount($start_date, $end_date);
