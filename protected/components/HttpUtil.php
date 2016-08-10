@@ -1,7 +1,7 @@
 <?php
 
 class HttpUtil {
-  public static function curl_get($url, $header=array(), $referer=NULL){
+  public static function curl_get($url, $header=array(), $referrer=NULL){
     preg_match('|://([^/:]*)|', $url, $matches);
     if($matches) $host = $matches[1];
     else return;
@@ -18,13 +18,13 @@ class HttpUtil {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_ENCODING, '');
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    if($referer) curl_setopt($ch, CURLOPT_REFERER, $referer);
+    if($referrer) curl_setopt($ch, CURLOPT_REFERER, $referrer);
     $r = curl_exec($ch);
     curl_close($ch);
     return $r;
   }
   
-  public static function curl_post($url, $data=array(), $header=array(), $referer=NULL){
+  public static function curl_post($url, $data=array(), $header=array(), $referrer=NULL){
     preg_match('|://([^/:]*)|', $url, $matches);
     if($matches) $host = $matches[1];
     else return;
@@ -43,7 +43,7 @@ class HttpUtil {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_ENCODING, '');
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    if($referer) curl_setopt($ch, CURLOPT_REFERER, $referer);
+    if($referrer) curl_setopt($ch, CURLOPT_REFERER, $referrer);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     $r = curl_exec($ch);
     curl_close($ch);

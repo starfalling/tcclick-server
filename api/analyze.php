@@ -3,6 +3,9 @@
 include dirname(dirname(__FILE__)) . '/protected/init.php';
 include TCClick::app()->root_path . '/protected/analyze/Analyzer.php';
 
+$dbMigrateUtil = new DbMigrateUtil();
+$dbMigrateUtil->upgrade();
+
 define("KEY_LOADING_CLIENT_ACTIVIES_LOCK", "KEY_LOADING_CLIENT_ACTIVIES_LOCK");
 
 $script_start_time = time();
