@@ -89,6 +89,7 @@ class DbMigrateUtil {
 							id int unsigned not null primary key,
 							`campaign_id` smallint unsigned not null default 0,
 							`site_id` smallint unsigned not null default 0,
+							`referrer` varchar(255) not null default '',
 							key `campaign_id`(`campaign_id`),
 							key `site_id`(`site_id`)
 						)";
