@@ -3,3 +3,4 @@ api/test*
 protected/runtime/application.error.log
 
 protected/data/QQWry.Dat
+.idea
