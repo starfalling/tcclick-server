@@ -24,26 +24,30 @@ class EventsController extends Controller {
   public function actionAjaxDailyCounts() {
     header("Content-type: application/json;charset=utf-8");
     $today = date("Y-m-d");
-    $start_date = $_GET['from'] ? $_GET['from'] : date("Y-m-d", time() - 86400 * 30);
+    if(!empty($_GET['from'])) {
+      $start_date = date('Y-m-d', strtotime($_GET['from']));
+    } else
+      $start_date = date("Y-m-d", time() - 86400 * 30);
     $end_date = $today;
-    $version = $_GET['version_id'] ? $_GET['version_id'] : 0;
-
-    $sql = "select * from {event_params} where event_id ={$_GET['event_id']} limit 1";
-    $stmt = TCClick::app()->db->query($sql);
-    foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-      $default_param = $row['param_id'];
+    $version_id = intval($_GET['version_id']);
+    $event_id = intval($_GET['event_id']);
+    $param_id = intval($_GET['param_id']);
+    if(!$param_id) {
+      $sql = "select * from {event_params} where event_id ={$event_id} limit 1";
+      $row = TCClick::app()->db->query($sql)->fetch(PDO::FETCH_ASSOC);
+      if(!empty($row)) {
+        $param_id = $row['param_id'];
+      }
     }
-    $param = $_GET['param_id'] ? $_GET['param_id'] : $default_param;
+
     $date = self::datesArrayForJsonOutput($start_date, $end_date);
     $json = array("stats" => array(), "dates" => $date, "result" => "success");
     $daily_count_with_dates = array();
 
-    if($version) {
-      $sql = "select * from {counter_daily_events} where event_id={$_GET['event_id']}
-	  	and version_id={$version} and param_id={$param} and date>='$start_date'";
-    } else {
-      $sql = "select * from {counter_daily_events} where event_id={$_GET['event_id']}
-	  		and param_id={$param} and date>='$start_date'";
+    $sql = "select * from {counter_daily_events} where event_id={$event_id}
+				and param_id={$param_id} and date>='$start_date' and date<='{$today}'";
+    if($version_id) {
+      $sql .= " and version_id={$version_id}";
     }
 
     $stmt = TCClick::app()->db->query($sql);
@@ -55,20 +59,19 @@ class EventsController extends Controller {
     }
 
     $all_count = array();
-
-    foreach($daily_count_with_dates as $key => $count_data) {
+    foreach($daily_count_with_dates as $value_id => $count_data) {
       foreach($count_data as $date => $count) {
         $all_count[$date] += $count;
       }
     }
 
-    foreach($daily_count_with_dates as $key => $count_data) {
+    foreach($daily_count_with_dates as $value_id => $count_data) {
       $daily_count = array();
       foreach($count_data as $date => $count) {
         if($all_count[$date]) $daily_count[] = round($count / $all_count[$date], 5);
         else $daily_count[] = 0;
       }
-      $json['stats'][] = array("data" => $daily_count, "name" => EventName::nameOf($key));
+      $json['stats'][] = array("data" => $daily_count, "name" => EventName::nameOf($value_id));
     }
     echo json_encode($json);
   }
