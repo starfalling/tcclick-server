@@ -9,12 +9,39 @@
     array("label" => "最近一年", "from" => date("Y-m-d", $now - 86400 * 365), "to" => null),
   ), array('from' => date("Y-m-d", $now - 86400 * 30)));
 
+
+  function sort_param_array($a, $b) {
+    static $param_id_counts_yesterday = null;
+    if($param_id_counts_yesterday === null) {
+      // 计算昨天不同 param 下的事件次数
+      $yesterday = date('Y-m-d', time() - 86400);
+      $sql = "select param_id, sum(`count`) as c from {counter_daily_events} 
+          where event_id ={$_GET['id']} and date='{$yesterday}'
+          group by param_id";
+      $param_id_counts_yesterday = array();
+      foreach(TCClick::app()->db->query($sql)->fetchAll() as $row) {
+        $param_id_counts_yesterday[$row['param_id']] = $row['c'];
+      }
+    }
+    $count_a = 0;
+    if(isset($param_id_counts_yesterday[$a['param_id']])) {
+      $count_a = $param_id_counts_yesterday[$a['param_id']];
+    }
+    $count_b = 0;
+    if(isset($param_id_counts_yesterday[$b['param_id']])) {
+      $count_b = $param_id_counts_yesterday[$b['param_id']];
+    }
+
+    return $count_b - $count_a;
+  }
+
   $sql = "select * from {event_params} where event_id ={$_GET['id']}";
   $stmt = TCClick::app()->db->query($sql);
   $param_array = array();
   foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $param_array[] = array("label" => EventName::nameof($row['name_id']), "param_id" => $row['param_id']);
   }
+  usort($param_array, 'sort_param_array');
   echo TCClickUtil::selector($param_array);
   $default_param_id = $param_array[0]['param_id'];
 
