@@ -28,18 +28,18 @@ if(!empty($rows)) {
 }
 TCClick::app()->cache->delete(KEY_LOADING_CLIENT_ACTIVIES_LOCK);
 
-$test_data = '{"timestamp":1470909016, "device":{"udid":"d4d1858a723f478b9c51da392d13bce7",' .
-  '"channel":"googlePlay","model":"SCH-I959","brand":"samsung","os_version":"5.0.1","app_version":"2.0",' .
-  '"resolution":"1080x1920","locale":"zh_CN","network":"wifi","android_id":"66b1f06fadae3881",' .
-  '"referrer":"af_tranid%3DLpqi2as0oa14SfR538neDg%26pid%3D1kxun%26c%3Dtest%26af_siteid%3Dqx",' .
-  '"mac":"40:0E:85:7F:F0:E4"}, "data":{"activities":[{"activity":"WelcomeActivity","start_at":1470909013,' .
-  '"end_at":1470909014},{"activity":"WelcomeActivity","start_at":1470909014,"end_at":1470909014},' .
-  '{"activity":"WelcomeActivity","start_at":1470909014,"end_at":1470909014}],"exceptions":[],"events":[]}}';
-$rows = array(array(
-  'ip' => '8.8.8.8',
-  'server_timestamp' => time(),
-  'data_compressed' => gzcompress($test_data),
-));
+//$test_data = '{"timestamp":1470909016, "device":{"udid":"d4d1858a723f478b9c51da392d13bce7",' .
+//  '"channel":"googlePlay","model":"SCH-I959","brand":"samsung","os_version":"5.0.1","app_version":"2.0",' .
+//  '"resolution":"1080x1920","locale":"zh_CN","network":"wifi","android_id":"66b1f06fadae3881",' .
+//  '"referrer":"af_tranid%3DLpqi2as0oa14SfR538neDg%26pid%3D1kxun%26c%3Dtest%26af_siteid%3Dqx",' .
+//  '"mac":"40:0E:85:7F:F0:E4"}, "data":{"activities":[{"activity":"WelcomeActivity","start_at":1470909013,' .
+//  '"end_at":1470909014},{"activity":"WelcomeActivity","start_at":1470909014,"end_at":1470909014},' .
+//  '{"activity":"WelcomeActivity","start_at":1470909014,"end_at":1470909014}],"exceptions":[],"events":[]}}';
+//$rows = array(array(
+//  'ip' => '8.8.8.8',
+//  'server_timestamp' => time(),
+//  'data_compressed' => gzcompress($test_data),
+//));
 
 foreach($rows as $row) {
   $data_uncompressed = @gzuncompress($row['data_compressed']);
