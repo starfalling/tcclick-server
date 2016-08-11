@@ -79,25 +79,25 @@ class DbMigrateUtil {
   }
 
   private function upgrade_5() {
-    $sql = "create table {devices_android_info_names} (
-							id smallint unsigned not null primary key,
+    $sql = "create table if not exists {devices_android_info_names} (
+							id smallint unsigned not null primary key auto_increment,
 							name varchar(255) not null,
 	            unique key name(name)
-						)";
+						) engine myisam";
     TCClick::app()->db->execute($sql);
-    $sql = "create table {devices_android_info} (
+    $sql = "create table if not exists {devices_android_info} (
 							id int unsigned not null primary key,
 							`campaign_id` smallint unsigned not null default 0,
 							`site_id` smallint unsigned not null default 0,
 							`referrer` varchar(255) not null default '',
 							key `campaign_id`(`campaign_id`),
 							key `site_id`(`site_id`)
-						)";
+						) engine myisam";
     TCClick::app()->db->execute($sql);
   }
 
   private function upgrade_6() {
-    $sql = "create table {counter_daily_new_with_android_info_site_id} (
+    $sql = "create table if not exists {counter_daily_new_with_android_info_site_id} (
 							`date` date,
 							`channel_id` smallint unsigned not null,
 							`site_id` smallint unsigned not null,
@@ -105,7 +105,7 @@ class DbMigrateUtil {
 	            primary key (`date`, `channel_id`, `site_id`)
 						) engine myisam";
     TCClick::app()->db->execute($sql);
-    $sql = "create table {counter_daily_active_with_android_info_site_id} (
+    $sql = "create table if not exists {counter_daily_active_with_android_info_site_id} (
 							`date` date,
 							`channel_id` smallint unsigned not null,
 							`site_id` smallint unsigned not null,
@@ -113,7 +113,7 @@ class DbMigrateUtil {
 	            primary key (`date`, `channel_id`, `site_id`)
 						) engine myisam";
     TCClick::app()->db->execute($sql);
-    $sql = "create table {counter_daily_new_with_android_info_campaign_id} (
+    $sql = "create table if not exists {counter_daily_new_with_android_info_campaign_id} (
 							`date` date,
 							`channel_id` smallint unsigned not null,
 							`campaign_id` smallint unsigned not null,
@@ -121,7 +121,7 @@ class DbMigrateUtil {
 	            primary key (`date`, `channel_id`, `campaign_id`)
 						) engine myisam";
     TCClick::app()->db->execute($sql);
-    $sql = "create table {counter_daily_active_with_android_info_campaign_id} (
+    $sql = "create table if not exists{counter_daily_active_with_android_info_campaign_id} (
 							`date` date,
 							`channel_id` smallint unsigned not null,
 							`campaign_id` smallint unsigned not null,

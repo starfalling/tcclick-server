@@ -72,7 +72,7 @@ class Device {
     if($this->id && !empty($this->referrer)) {
       $sql = "select * from {devices_android_info} where id={$this->id}";
       $row = TCClick::app()->db->query($sql)->fetch(PDO::FETCH_ASSOC);
-      if(!empty($row)) {
+      if(empty($row)) {
         $sql = "insert ignore into {devices_android_info} (id, campaign_id, site_id, referrer)
                 values (:id, :campaign_id, :site_id, :referrer)";
         TCClick::app()->db->execute($sql, array(
