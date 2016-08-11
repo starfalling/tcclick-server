@@ -1,6 +1,7 @@
 api/test*
 .DS_Store
 protected/runtime/application.error.log
+protected/runtime/device_ids
 
 protected/data/QQWry.Dat
 .idea
