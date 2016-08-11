@@ -1,14 +1,9 @@
 <?php
 include_once dirname(dirname(__FILE__)) . '/protected/init.php';
-include_once TCClick::app()->root_path . '/protected/components/RegPattern.php';
+include_once dirname(dirname(__FILE__)) . '/protected/components/RegPattern.php';
+require dirname(__FILE__) . '/_init_with_params.php';
 
 // 重新计算某一天各个使用时长区间的设备数分布
-$date = date("Y-m-d");
-if($_GET['date'] && preg_match(RegPattern::DATE, $_GET['date'])){
-	$date = $_GET['date'];
-}
-if($_GET['date'] == "yesterday") $date = date("Y-m-d", time()-86400);
-
 $sql = "delete from {counter_daily_seconds_spent_per_day} where date=:date";
 TCClick::app()->db->execute($sql, array(":date"=>$date));
 

@@ -2,7 +2,6 @@
 
 class DeviceAndroidInfoName {
   private static $all_names = null;
-  const CHANNEL_ID_ALL = 0;
 
   /**
    * get all the android info names from databases
@@ -29,7 +28,7 @@ class DeviceAndroidInfoName {
       while(true) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if(!$row) break;
-        self::$all_names[$row['channel']] = $row['id'];
+        self::$all_names[$row['name']] = $row['id'];
       }
       TCClick::app()->cache->set('tcclick_all_device_android_info_names', self::$all_names);
     }
@@ -38,7 +37,7 @@ class DeviceAndroidInfoName {
   }
 
   /**
-   * add a channel to database by name
+   * add a android info name to database
    * @param string $name
    */
   public static function add($name) {
@@ -48,7 +47,7 @@ class DeviceAndroidInfoName {
   }
 
   /**
-   * query unique id of the channel in database, create one if not exist
+   * query unique id of the android info name in database, create one if not exist
    * @param string $name
    * @return int
    */
@@ -63,7 +62,7 @@ class DeviceAndroidInfoName {
   }
 
   /**
-   * query channel name by chanel id
+   * query android info name by chanel id
    * @param integer $id
    * @return string
    */

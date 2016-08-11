@@ -13,6 +13,7 @@ $sites = ExternalSite::allForCurrentUser();
 		<dt>统计概况<b></b></dt>
 		<dd><a href="<?php echo TCClick::app()->root_url, 'reports', $external_site_id?>">基本统计</a></dd>
 		<dd><a href="<?php echo TCClick::app()->root_url, 'reportsChannel', $external_site_id?>">渠道分布</a></dd>
+		<dd><a href="<?php echo TCClick::app()->root_url, 'reportsGooglePlayReferrer', $external_site_id?>">子渠道分布(安卓)</a></dd>
 		<?php if($user && $user->isAdmin()):?>
 		<dd><a href="<?php echo TCClick::app()->root_url, 'reportsVersion', $external_site_id?>">版本分布</a></dd>
 		<?php endif?>

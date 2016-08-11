@@ -1,13 +1,13 @@
 <?php
-include_once dirname(dirname(__FILE__)) . '/protected/init.php';
-include_once TCClick::app()->root_path . '/protected/components/RegPattern.php';
+/**
+ * 重新计算daily_counter的各项值
+ * @var string $date
+ */
 
-// 重新计算daily_counter的各项值
-$date = date("Y-m-d");
-if($_GET['date'] && preg_match(RegPattern::DATE, $_GET['date'])){
-	$date = $_GET['date'];
-}
-if($_GET['date'] == "yesterday") $date = date("Y-m-d", time()-86400);
+include_once dirname(dirname(__FILE__)) . '/protected/init.php';
+include_once dirname(dirname(__FILE__)) . '/protected/components/RegPattern.php';
+require dirname(__FILE__) . '/_init_with_params.php';
+
 
 // new devices count
 $sql = "select count(*) from {devices} where created_at>='{$date}'
@@ -35,20 +35,21 @@ $sql = "select max(device_id) from {{$tablename}}";
 $max_device_id = TCClick::app()->db->query($sql)->fetchColumn(0);
 
 $rows_per_fetch = 50000; // 每次获取5万，因为SAE不允许对超过20万行数据执行查询操作
-$from = 0; $to = $rows_per_fetch;
-while(true){
-	$sql = "select count(*), sum(open_times), sum(open_times_with_seconds_spent), sum(seconds_spent)
+$from = 0;
+$to = $rows_per_fetch;
+while(true) {
+  $sql = "select count(*), sum(open_times), sum(open_times_with_seconds_spent), sum(seconds_spent)
 	from {{$tablename}} where device_id>{$from} and device_id<={$to}";
-	$row = TCClick::app()->db->query($sql)->fetch(PDO::FETCH_BOTH);
-	if($row){
-		$active_devices_count += $row[0];
-		$open_times += $row[1];
-		$open_times_with_seconds_spent += $row[2];
-		$seconds_spent += $row[3];
-	}
-	$from += $rows_per_fetch;
-	$to += $rows_per_fetch;
-	if($from > $max_device_id) break;
+  $row = TCClick::app()->db->query($sql)->fetch(PDO::FETCH_BOTH);
+  if($row) {
+    $active_devices_count += $row[0];
+    $open_times += $row[1];
+    $open_times_with_seconds_spent += $row[2];
+    $seconds_spent += $row[3];
+  }
+  $from += $rows_per_fetch;
+  $to += $rows_per_fetch;
+  if($from > $max_device_id) break;
 }
 
 
@@ -65,4 +66,4 @@ update_devices_count={$update_devices_count},
 open_times={$open_times},
 open_times_with_seconds_spent={$open_times_with_seconds_spent},
 seconds_spent={$seconds_spent}";
-TCClick::app()->db->execute($sql, array(":date"=>$date));
+TCClick::app()->db->execute($sql, array(":date" => $date));

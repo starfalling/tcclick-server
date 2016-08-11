@@ -5,7 +5,7 @@
  */
 
 include dirname(dirname(__FILE__)) . '/protected/init.php';
-include_once TCClick::app()->root_path . '/protected/components/RegPattern.php';
+include_once dirname(dirname(__FILE__)) . '/protected/components/RegPattern.php';
 
 
 $today = strtotime(date('Y-m-d'));

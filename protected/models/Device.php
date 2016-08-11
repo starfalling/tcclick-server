@@ -30,13 +30,16 @@ class Device {
   public function save($accessed_at = null) {
     if($this->id) return; // already saved into database
 
-    $pid = $compaign = $af_siteid = '';
+    $pid = $campaign = $af_siteid = '';
     if(!empty($this->referrer)) {
       $referrer_decoded = array();
       parse_str(urldecode($this->referrer), $referrer_decoded);
       if(!empty($referrer_decoded['pid'])) $pid = $referrer_decoded['pid'];
-      if(!empty($referrer_decoded['c'])) $compaign = $referrer_decoded['c'];
+      if(!empty($referrer_decoded['c'])) $campaign = $referrer_decoded['c'];
       if(!empty($referrer_decoded['af_siteid'])) $af_siteid = $referrer_decoded['af_siteid'];
+      if(!empty($referrer_decoded['utm_source'])) $pid = $referrer_decoded['utm_source'];
+      if(!empty($referrer_decoded['utm_campaign'])) $campaign = $referrer_decoded['utm_campaign'];
+      if(!empty($referrer_decoded['utm_medium'])) $af_siteid = $referrer_decoded['utm_medium'];
 
       if(!empty($pid) && $pid != $this->channel) {
         $this->channel = $pid;
@@ -74,7 +77,7 @@ class Device {
                 values (:id, :campaign_id, :site_id, :referrer)";
         TCClick::app()->db->execute($sql, array(
           ':id' => $this->id,
-          ':campaign_id' => DeviceAndroidInfoName::idFor($compaign),
+          ':campaign_id' => DeviceAndroidInfoName::idFor($campaign),
           ':site_id' => DeviceAndroidInfoName::idFor($af_siteid),
           ':referrer' => $this->referrer,
         ));

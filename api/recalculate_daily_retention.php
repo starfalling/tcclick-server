@@ -1,12 +1,7 @@
 <?php
 include_once dirname(dirname(__FILE__)) . '/protected/init.php';
-include_once TCClick::app()->root_path . '/protected/components/RegPattern.php';
-
-$date = date("Y-m-d");
-if($_GET['date'] && preg_match(RegPattern::DATE, $_GET['date'])){
-	$date = $_GET['date'];
-}
-if($_GET['date'] == "yesterday") $date = date("Y-m-d", time()-86400);
+include_once dirname(dirname(__FILE__)) . '/protected/components/RegPattern.php';
+require dirname(__FILE__) . '/_init_with_params.php';
 $time = strtotime($date);
 
 

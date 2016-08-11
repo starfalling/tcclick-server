@@ -3,7 +3,9 @@
 
 class Config{
 	const KEY_CURRENT_DB_VERSION = 'KEY_CURRENT_DB_VERSION';
-	
+	const KEY_DEVICE_COUNTS_WITH_ANDROID_INFO_SITE_ID = 'KEY_DEVICE_COUNTS_WITH_ANDROID_INFO_SITE_ID';
+	const KEY_DEVICE_COUNTS_WITH_ANDROID_INFO_CAMPAIGN_ID = 'KEY_DEVICE_COUNTS_WITH_ANDROID_INFO_CAMPAIGN_ID';
+
 	public static function get($key, $default=null){
 		$sql = "select value from {configs} where `key`=:key";
 		$row = TCClick::app()->db->query($sql, array(':key'=>$key))->fetch(PDO::FETCH_ASSOC);

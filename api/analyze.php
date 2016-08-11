@@ -1,7 +1,7 @@
 <?php
 
 include dirname(dirname(__FILE__)) . '/protected/init.php';
-include TCClick::app()->root_path . '/protected/analyze/Analyzer.php';
+include dirname(dirname(__FILE__)) . '/protected/analyze/Analyzer.php';
 
 $dbMigrateUtil = new DbMigrateUtil();
 $dbMigrateUtil->upgrade();

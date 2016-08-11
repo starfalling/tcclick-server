@@ -1,7 +1,7 @@
 <?php
 
 include_once dirname(dirname(__FILE__)) . '/protected/init.php';
-include_once TCClick::app()->root_path . '/protected/components/IpLocationSeekerTCClick.php';
+include_once dirname(dirname(__FILE__)) . '/protected/components/IpLocationSeekerTCClick.php';
 
 $data_compressed = file_get_contents('php://input');
 if($data_compressed){

@@ -83,9 +83,10 @@ border:1px solid #E3E3E3;border-bottom:none;cursor: pointer;}
 .block table thead tr{background: url(../images/bg_jdleft.jpg) #E6E6E6 repeat-x 0 -30px;}
 .block table th{font-weight:normal;border-right: 1px solid #D2D2D2;line-height:20px;
 border-bottom: 1px solid #B2B2B2;box-shadow: 0 1px 0 white inset;text-shadow: 0 1px 0 white;}
-.block table tbody td{border-right: 1px solid #D2D2D2;color: #161616;
+.block table tbody td{border-right: 1px solid #D2D2D2;border-bottom: 1px solid #D2D2D2;color: #161616;
 padding: 3px 4px 2px 15px;}
 .block table tbody tr.even td{background-color: #F0F0F0;}
+.block table tbody tr:nth-child(even) td{background-color: #F0F0F0;}
 .block table tbody tr:hover td{background-color: #E0EBF8;}
 .block a.download_excel{position:absolute;top:43px;right:10px;}
 
