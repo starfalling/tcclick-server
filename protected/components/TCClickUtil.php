@@ -244,7 +244,12 @@ class TCClickUtil{
 			return $html;
 		}
 	}
-	
+
+	/**
+	 * @param array $options
+	 * @param array $default_options
+	 * @return string
+	 */
 	public static function selector($options, $default_options=array()){
 		$selected_option_index = 0;
 		foreach($options as $i=>&$option){
