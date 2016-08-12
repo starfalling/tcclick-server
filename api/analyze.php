@@ -13,7 +13,7 @@ $script_start_time = time();
 while(true) {
   if(time() - $script_start_time > 60) exit;
 
-  $sql = "select * from {client_activities} order by id limit 1000";
+  $sql = "select * from {client_activities} order by id limit 10000";
   $stmt = TCClick::app()->db->query($sql);
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
   if(!empty($rows)) {
