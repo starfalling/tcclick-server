@@ -8,6 +8,10 @@ include_once dirname(dirname(__FILE__)) . '/protected/init.php';
 include_once dirname(dirname(__FILE__)) . '/protected/components/RegPattern.php';
 require dirname(__FILE__) . '/_init_with_params.php';
 
+// 判断是否存在子渠道, 如果不存在子渠道的设备数据, 不需要执行相关统计
+$sql = "select * from {devices_android_info} limit 1";
+if(empty(TCClick::app()->db->query($sql)->fetch())) exit;
+
 
 function calculateCountWithAndroidInfo($id_channels, &$count_sites, &$count_campaigns) {
   $sql = "select id, campaign_id, site_id from {devices_android_info} 
