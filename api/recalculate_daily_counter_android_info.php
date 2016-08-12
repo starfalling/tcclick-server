@@ -123,8 +123,8 @@ if(file_exists($device_ids_file_path)) {
   // 从数据库中查询活跃设备
   $min_device_id = 0;
   $row_limit_per_fetch = 1000;
-  $ids = array();
   while(true) {
+    $ids = array();
     $sql = "select device_id from {{$tablename}} where device_id>{$min_device_id} 
 					order by device_id limit $row_limit_per_fetch";
     $stmt = TCClick::app()->db->query($sql);
@@ -136,7 +136,6 @@ if(file_exists($device_ids_file_path)) {
     calculateCountWithAndroidInfo($id_channels, $active_count_sites, $active_count_campaigns);
     if(count($ids) != $row_limit_per_fetch) break;
   }
-
 
 }
 
