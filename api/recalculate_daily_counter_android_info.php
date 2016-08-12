@@ -131,6 +131,7 @@ if(file_exists($device_ids_file_path)) {
     while(($row = $stmt->fetch(PDO::FETCH_ASSOC)) != null) {
       $ids[] = $row["device_id"];
     }
+    $min_device_id = $ids[count($ids) - 1];
     if(empty($ids)) break;
     $id_channels = loadDeviceChannels($ids);
     calculateCountWithAndroidInfo($id_channels, $active_count_sites, $active_count_campaigns);
