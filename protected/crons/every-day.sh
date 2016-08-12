@@ -1,6 +1,9 @@
 #!/bin/bash
 
 PHP="/usr/bin/php"
+if [ -f "/etc/php.ini" ]; then
+  PHP="$PHP -c /etc/php.ini"
+fi
 
 cd $(dirname $0)
 BASEDIR=$(dirname $(dirname `pwd`))
