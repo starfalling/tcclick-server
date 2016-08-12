@@ -6,7 +6,7 @@ define("TCCLICK_DEBUG_SQL_STATISTICS", 0); // 是否对sql执行情况进行统�
 
 if(defined('SAE_TMP_PATH')) include 'config_sae.php';
 
-define("MYSQL_DSN_MASTER", "mysql:host=localhost;port=3306;dbname=tcclick;charset=utf8");
+define("MYSQL_DSN_MASTER", "mysql:host=127.0.0.1;port=3306;dbname=tcclick;charset=utf8");
 define("MYSQL_USER_MASTER", "root");
 define("MYSQL_PASS_MASTER", "root");
 
