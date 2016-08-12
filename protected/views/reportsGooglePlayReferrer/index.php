@@ -53,8 +53,7 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
       foreach($subchannel_counts as $site_id => $count) {
         $i++; ?>
         <tr>
-          <?php if(!$channel_name_td_echoed):
-            $channel_name_td_echoed = true; ?>
+          <?php if(!$channel_name_td_echoed): ?>
             <td rowspan="<?php echo count($subchannel_counts) ?>">
               <?php echo Channel::nameOf($channel_id) ?></td>
           <?php endif ?>
@@ -64,14 +63,17 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
           <td><?php echo $yesterday_active_counts[$channel_id][$site_id] ?></td>
           <td><?php echo $today_new_counts[$channel_id][$site_id] ?></td>
           <td><?php echo $today_active_counts[$channel_id][$site_id] ?></td>
-          <td>
-            <a href='<?php echo TCClick::app()->root_url,
-            'reportsGooglePlayReferrer/view?channel_id=', $channel_id,
-            '&site_id=', $site_id
-            ?>'>查看</a>
-          </td>
+          <?php if(!$channel_name_td_echoed): ?>
+            <td rowspan="<?php echo count($subchannel_counts) ?>">
+              <a href='<?php echo TCClick::app()->root_url,
+              'reportsGooglePlayReferrer/view?channel_id=', $channel_id,
+              '&field=site_id' ?>'>查看</a>
+            </td>
+          <?php endif ?>
         </tr>
-      <?php }
+        <?php
+        $channel_name_td_echoed = true;
+      }
     }
     ?>
     </tbody>
@@ -94,7 +96,7 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
     <thead>
     <tr>
       <th>渠道</th>
-      <th>子渠道</th>
+      <th>Campaign</th>
       <th>总设备数</th>
       <th>昨日新增</th>
       <th>昨日活跃</th>
@@ -111,8 +113,7 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
       foreach($subchannel_counts as $campaign_id => $count) {
         $i++; ?>
         <tr>
-          <?php if(!$channel_name_td_echoed):
-            $channel_name_td_echoed = true; ?>
+          <?php if(!$channel_name_td_echoed): ?>
             <td rowspan="<?php echo count($subchannel_counts) ?>">
               <?php echo Channel::nameOf($channel_id) ?></td>
           <?php endif ?>
@@ -122,14 +123,17 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
           <td><?php echo $yesterday_active_counts[$channel_id][$campaign_id] ?></td>
           <td><?php echo $today_new_counts[$channel_id][$campaign_id] ?></td>
           <td><?php echo $today_active_counts[$channel_id][$campaign_id] ?></td>
-          <td>
-            <a href='<?php echo TCClick::app()->root_url,
-            'reportsGooglePlayReferrer/view?channel_id=', $channel_id,
-            '&campaign_id=', $campaign_id
-            ?>'>查看</a>
-          </td>
+          <?php if(!$channel_name_td_echoed): ?>
+            <td rowspan="<?php echo count($subchannel_counts) ?>">
+              <a href='<?php echo TCClick::app()->root_url,
+              'reportsGooglePlayReferrer/view?channel_id=', $channel_id,
+              '&field=campaign_id' ?>'>查看</a>
+            </td>
+          <?php endif; ?>
         </tr>
-      <?php }
+        <?php
+        $channel_name_td_echoed = true;
+      }
     }
     ?>
     </tbody>
