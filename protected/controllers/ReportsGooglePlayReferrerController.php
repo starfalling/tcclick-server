@@ -6,7 +6,7 @@ class ReportsGooglePlayReferrerController extends Controller {
   public function filters() {
     return array(
       "LoginRequiredFilter",
-      "ExternalAccessFilter - index",
+      "ExternalAccessFilter - index, view",
     );
   }
 
