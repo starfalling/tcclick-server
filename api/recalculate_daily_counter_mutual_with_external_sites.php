@@ -69,7 +69,7 @@ if(!empty($new_counts)) {
   foreach($new_counts as $external_site_id => $count) {
     $sql_values[] = "('{$date}', {$external_site_id}, {$count})";
   }
-  $sql .= $sql_values . ' on duplicate key update new_count=values(new_count)';
+  $sql .= join(',', $sql_values) . ' on duplicate key update new_count=values(new_count)';
   TCClick::app()->db->execute($sql);
 }
 
@@ -125,6 +125,6 @@ if(!empty($active_counts)) {
   foreach($new_counts as $external_site_id => $count) {
     $sql_values[] = "('{$date}', {$external_site_id}, {$count})";
   }
-  $sql .= $sql_values . ' on duplicate key update active_count=values(active_count)';
+  $sql .= join(',', $sql_values) . ' on duplicate key update active_count=values(active_count)';
   TCClick::app()->db->execute($sql);
 }
