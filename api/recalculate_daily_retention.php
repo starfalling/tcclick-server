@@ -56,6 +56,7 @@ for($i = 1; $i <= 8; $i++) {
   $active_device_ids = array(); // 在这一天新增设备范围之内的活跃设备号
   while(true) {
     $device_id = unpack('I', fread($handle, 4));
+    if($device_id === false) break;
     $device_id = $device_id[1];
     if($device_id > $max_device_id) break;
     $active_device_ids[$device_id] = true;
