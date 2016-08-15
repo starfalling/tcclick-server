@@ -11,11 +11,15 @@ foreach(TCClick::app()->db->query($sql)->fetchAll() as $row) {
 }
 
 $yesterday_counts = array();
-$sql = "select * from {counter_daily} where `date`='{$yesterday}'";
+$sql = "select * from {counter_daily_new} where `date`='{$yesterday}' and channel_id=" . Channel::CHANNEL_ID_ALL;
 $row = TCClick::app()->db->query($sql)->fetch();
 if(!empty($row)) {
-  $yesterday_counts['new'] = $row['new_devices_count'];
-  $yesterday_counts['active'] = $row['active_devices_count'];
+  $yesterday_counts['new'] = $row['count'];
+}
+$sql = "select * from {counter_daily_active} where `date`='{$yesterday}' and channel_id=" . Channel::CHANNEL_ID_ALL;
+$row = TCClick::app()->db->query($sql)->fetch();
+if(!empty($row)) {
+  $yesterday_counts['active'] = $row['count'];
 }
 
 
@@ -35,8 +39,8 @@ if(!empty($row)) {
     <tbody>
     <tr>
       <td style="color:#4180B6;">本站</td>
-      <td style="color:#4180B6;"><?php echo $yesterday_counts['new'] ?></td>
-      <td style="color:#4180B6;"><?php echo $yesterday_counts['active'] ?></td>
+      <td style="color:#4180B6;"><?php echo $yesterday_counts['new'] ?>(总新增)</td>
+      <td style="color:#4180B6;"><?php echo $yesterday_counts['active'] ?>(总活跃)</td>
       <td>&nbsp;</td>
     </tr>
     <?php foreach(ExternalSite::all() as $site) {
@@ -46,14 +50,14 @@ if(!empty($row)) {
         <td><?php echo $site->name ?></td>
         <td><?php if($yesterday_mutual_counts[$site->id]) {
             echo $yesterday_mutual_counts[$site->id]['new'];
-            if($yesterday_counts['new']){
+            if($yesterday_counts['new']) {
               $percentage = $yesterday_mutual_counts[$site->id]['new'] / $yesterday_counts['new'];
               printf(' (%.1f%%)', $percentage * 100);
             }
           } ?></td>
         <td><?php if($yesterday_mutual_counts[$site->id]) {
             echo $yesterday_mutual_counts[$site->id]['active'];
-            if($yesterday_counts['active']){
+            if($yesterday_counts['active']) {
               $percentage = $yesterday_mutual_counts[$site->id]['active'] / $yesterday_counts['active'];
               printf(' (%.1f%%)', $percentage * 100);
             }
