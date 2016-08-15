@@ -84,5 +84,22 @@ class Device {
       }
     }
   }
+
+
+  /**
+   * 根据设备 ID 查询设备号
+   * @param int[] $ids
+   * @return string[]
+   */
+  public static function loadUdidsById($ids) {
+    $udids = array();
+    $sql = "select udid from {devices} where id in (" . join(",", $ids) . ")";
+    $stmt = TCClick::app()->db->query($sql);
+    while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $udids[] = $row['udid'];
+    }
+
+    return $udids;
+  }
 }
 

@@ -21,7 +21,7 @@ class ExternalSite {
   }
 
   /**
-   * @return array
+   * @return static[]
    */
   public static function all() {
     $result = array();

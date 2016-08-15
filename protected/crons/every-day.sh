@@ -12,7 +12,8 @@ BASEDIR=$(dirname $(dirname `pwd`))
 $PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/export_daily_active_device_ids.php yesterday
 $PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_daily_counter.php yesterday
 $PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_daily_counter.php
-$PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_daily_counter_android_info.php
+$PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_daily_counter_android_info.php yesterday
+$PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_daily_counter_mutual_with_external_sites.php yesterday
 
 $PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_seconds_spent_per_day.php yesterday
 $PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_daily_retention.php yesterday
