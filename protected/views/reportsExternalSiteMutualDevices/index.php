@@ -65,9 +65,6 @@ if(!empty($row)) {
         <td>
           <?php
           $url = TCClick::app()->root_url . 'reportsExternalSiteMutualDevices/view?site_id=' . $site->id;
-          if(isset($_GET['external_site_id'])) {
-            $url .= '&external_site_id=' . $_GET['external_site_id'];
-          }
           ?>
           <a href='<?php echo $url ?>'>查看</a>
         </td>
@@ -76,3 +73,12 @@ if(!empty($row)) {
     </tbody>
   </table>
 </div>
+
+<script>$(function() {
+    if(external_site_id) {
+      $(".block td a").each(function() {
+        if(this.href.indexOf('?') != -1) this.href += "&external_site_id=" + external_site_id;
+        else this.href += "?external_site_id=" + external_site_id;
+      });
+    }
+  });</script>
