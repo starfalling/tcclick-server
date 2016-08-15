@@ -10,6 +10,7 @@ class ExternalAccessFilter extends Filter{
 				if($root_url[strlen($root_url)-1]=='/') $root_url = substr($root_url, 0, strlen($root_url)-1);
 				$request_uri = $_SERVER['REQUEST_URI'];
 				$request_uri = preg_replace('/external_site_id=[^&]+&?/', '', $request_uri);
+				$request_uri = substr($request_uri, strlen(TCClick::app()->root_url)-1);
 				if($request_uri[strlen($request_uri)-1]=='?' || $request_uri[strlen($request_uri)-1]=='&'){
 					$url = $root_url . $request_uri . "external_code=" . $site->code;
 				}else{
