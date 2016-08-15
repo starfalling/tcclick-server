@@ -27,10 +27,16 @@ class DevicesController extends Controller {
       }
     }
 
+    // 这些设备在这一天之前是否已经在系统当中存在了
+    $date = date('Y-m-d');
+    if(!empty($_GET['date'])) {
+      $date = date('Y-m-d', strtotime($_GET['date']));
+    }
+
     if(!empty($udids)) {
       $sql = "select count(*) as c from " . MYSQL_TABLE_PREFIX . "devices where udid in ("
         . join(',', array_fill(0, count($udids), '?'))
-        . ")";
+        . ") and created_at<='{$date} 23:59:59'";
       $stmt = TCClick::app()->db->getDbSlave()->prepare($sql);
       foreach($udids as $i => $udid) {
         $stmt->bindValue($i + 1, $udid);

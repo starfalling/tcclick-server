@@ -6,7 +6,7 @@
  * @author York.Gu <gyq5319920@gmail.com>
  */
 class DbMigrateUtil {
-  const LATEST_DB_VERSION = 6;
+  const LATEST_DB_VERSION = 7;
 
 
   public function upgrade() {
@@ -36,100 +36,116 @@ class DbMigrateUtil {
 
   private function upgrade_1() {
     $sql = "create table {configs} (
-				`id` integer primary key not null auto_increment,
-				`key` varchar(255) not null default '',
-				`value` mediumblob,
-				unique key `key`(`key`)
-		)engine myisam character set utf8";
+        `id` integer primary key not null auto_increment,
+        `key` varchar(255) not null default '',
+        `value` mediumblob,
+        unique key `key`(`key`)
+    )engine myisam character set utf8";
     TCClick::app()->db->execute($sql);
   }
 
   private function upgrade_2() {
     $sql = "create table {external_codes} (
-				`id` integer primary key not null auto_increment,
-				`code` char(40) not null default '',
-				`user_id` integer not null,
-				`created_at` timestamp not null default current_timestamp,
-				unique key `code`(`code`)
-		)engine myisam character set utf8";
+        `id` integer primary key not null auto_increment,
+        `code` char(40) not null default '',
+        `user_id` integer not null,
+        `created_at` timestamp not null default current_timestamp,
+        unique key `code`(`code`)
+    )engine myisam character set utf8";
     TCClick::app()->db->execute($sql);
   }
 
   private function upgrade_3() {
     $sql = "create table {external_sites} (
-				`id` integer primary key not null auto_increment,
-				`code` char(40) not null default '',
-				`name` varchar(255) not null default '',
-				`url` varchar(255) not null default '',
-				`user_id` integer not null,
-				`is_admin` tinyint not null default 0,
-				`created_at` timestamp not null default current_timestamp,
-				unique key `code`(`code`)
-		)engine myisam character set utf8";
+        `id` integer primary key not null auto_increment,
+        `code` char(40) not null default '',
+        `name` varchar(255) not null default '',
+        `url` varchar(255) not null default '',
+        `user_id` integer not null,
+        `is_admin` tinyint not null default 0,
+        `created_at` timestamp not null default current_timestamp,
+        unique key `code`(`code`)
+    )engine myisam character set utf8";
     TCClick::app()->db->execute($sql);
   }
 
   private function upgrade_4() {
     $sql = "alter table {external_sites} 
-				add column status tinyint not null default 0";
+        add column status tinyint not null default 0";
     TCClick::app()->db->execute($sql);
     $sql = "alter table {external_sites} 
-				add column weight int not null default 0";
+        add column weight int not null default 0";
     TCClick::app()->db->execute($sql);
   }
 
   private function upgrade_5() {
     $sql = "create table if not exists {devices_android_info_names} (
-							id smallint unsigned not null primary key auto_increment,
-							name varchar(255) not null,
-	            unique key name(name)
-						) engine myisam";
+              id smallint unsigned not null primary key auto_increment,
+              name varchar(255) not null,
+              unique key name(name)
+            ) engine myisam";
     TCClick::app()->db->execute($sql);
     $sql = "create table if not exists {devices_android_info} (
-							id int unsigned not null primary key,
-							`campaign_id` smallint unsigned not null default 0,
-							`site_id` smallint unsigned not null default 0,
-							`referrer` varchar(255) not null default '',
-							key `campaign_id`(`campaign_id`),
-							key `site_id`(`site_id`)
-						) engine myisam";
+              id int unsigned not null primary key,
+              `campaign_id` smallint unsigned not null default 0,
+              `site_id` smallint unsigned not null default 0,
+              `referrer` varchar(255) not null default '',
+              key `campaign_id`(`campaign_id`),
+              key `site_id`(`site_id`)
+            ) engine myisam";
     TCClick::app()->db->execute($sql);
   }
 
   private function upgrade_6() {
     $sql = "create table if not exists {counter_daily_new_with_android_info_site_id} (
-							`date` date,
-							`channel_id` smallint unsigned not null,
-							`site_id` smallint unsigned not null,
-							`count` integer unsigned not null default 0,
-	            primary key (`date`, `channel_id`, `site_id`)
-						) engine myisam";
+              `date` date,
+              `channel_id` smallint unsigned not null,
+              `site_id` smallint unsigned not null,
+              `count` integer unsigned not null default 0,
+              primary key (`date`, `channel_id`, `site_id`)
+            ) engine myisam";
     TCClick::app()->db->execute($sql);
     $sql = "create table if not exists {counter_daily_active_with_android_info_site_id} (
-							`date` date,
-							`channel_id` smallint unsigned not null,
-							`site_id` smallint unsigned not null,
-							`count` integer unsigned not null default 0,
-	            primary key (`date`, `channel_id`, `site_id`)
-						) engine myisam";
+              `date` date,
+              `channel_id` smallint unsigned not null,
+              `site_id` smallint unsigned not null,
+              `count` integer unsigned not null default 0,
+              primary key (`date`, `channel_id`, `site_id`)
+            ) engine myisam";
     TCClick::app()->db->execute($sql);
     $sql = "create table if not exists {counter_daily_new_with_android_info_campaign_id} (
-							`date` date,
-							`channel_id` smallint unsigned not null,
-							`campaign_id` smallint unsigned not null,
-							`count` integer unsigned not null default 0,
-	            primary key (`date`, `channel_id`, `campaign_id`)
-						) engine myisam";
+              `date` date,
+              `channel_id` smallint unsigned not null,
+              `campaign_id` smallint unsigned not null,
+              `count` integer unsigned not null default 0,
+              primary key (`date`, `channel_id`, `campaign_id`)
+            ) engine myisam";
     TCClick::app()->db->execute($sql);
-    $sql = "create table if not exists{counter_daily_active_with_android_info_campaign_id} (
-							`date` date,
-							`channel_id` smallint unsigned not null,
-							`campaign_id` smallint unsigned not null,
-							`count` integer unsigned not null default 0,
-	            primary key (`date`, `channel_id`, `campaign_id`)
-						) engine myisam";
+    $sql = "create table if not exists {counter_daily_active_with_android_info_campaign_id} (
+              `date` date,
+              `channel_id` smallint unsigned not null,
+              `campaign_id` smallint unsigned not null,
+              `count` integer unsigned not null default 0,
+              primary key (`date`, `channel_id`, `campaign_id`)
+            ) engine myisam";
     TCClick::app()->db->execute($sql);
   }
+
+
+  private function upgrade_7() {
+    // 在外部站信息中增加是否计算共同用户的设置
+    $sql = "alter table {external_sites} add column calculate_mutual_devices tinyint not null default 0";
+    TCClick::app()->db->execute($sql);
+    $sql = "create table if not exists {counter_daily_mutual_with_external_sites} (
+              `date` date,
+              `external_site_id` smallint unsigned not null,
+              `new_count` integer unsigned not null default 0,
+              `active_count` integer unsigned not null default 0,
+              primary key (`date`, `external_site_id`)
+            ) engine myisam";
+    TCClick::app()->db->execute($sql);
+  }
+
 
   private function executeInitSql() {
     $content = file_get_contents(TCClick::app()->root_path . "/protected/data/init.sql");
