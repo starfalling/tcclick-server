@@ -122,7 +122,7 @@ if(!empty($active_counts)) {
   $sql = "insert into {counter_daily_mutual_with_external_sites}
           (`date`, `external_site_id`, `active_count`) values ";
   $sql_values = array();
-  foreach($new_counts as $external_site_id => $count) {
+  foreach($active_counts as $external_site_id => $count) {
     $sql_values[] = "('{$date}', {$external_site_id}, {$count})";
   }
   $sql .= join(',', $sql_values) . ' on duplicate key update active_count=values(active_count)';
