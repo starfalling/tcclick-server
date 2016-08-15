@@ -31,8 +31,12 @@ class ReportsGooglePlayReferrerController extends Controller {
 
   public function actionAjaxDailyCountsSpline() {
     header("Content-type: application/json;charset=utf-8");
-    $start_date = $_GET['start_date'] ? $_GET['start_date'] : date("Y-m-d", time() - 86400 * 30);
-    $end_date = $_GET['end_date'] ? $_GET['end_date'] : date("Y-m-d", time());
+    $today = date("Y-m-d");
+    if(!empty($_GET['from'])) {
+      $start_date = date('Y-m-d', strtotime($_GET['from']));
+    } else
+      $start_date = date("Y-m-d", time() - 86400 * 30);
+    $end_date = $today;
     $json = array("stats" => array(), "result" => "success");
     $daily_counts = array();
     $channel_id = intval($_GET['channel_id']);
