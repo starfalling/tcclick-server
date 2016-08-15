@@ -18,7 +18,7 @@
   ?>
 </h1>
 <div class="block">
-  <h3><a href="<?php echo TCClick::app()->root_url ?>reportsGooglePlayReferrer">&lt;&lt; 返回外部站列表</a></h3>
+  <h3><a href="<?php echo TCClick::app()->root_url ?>reportsExternalSiteMutualDevices">&lt;&lt; 返回外部站列表</a></h3>
   <ul class="tabs">
     <li id="tab_daily_new" class="tab current">新增设备</li>
     <li id="tab_daily_active" class="tab">活跃设备</li>
