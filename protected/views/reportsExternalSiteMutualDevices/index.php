@@ -63,8 +63,13 @@ if(!empty($row)) {
             }
           } ?></td>
         <td>
-          <a href='<?php echo TCClick::app()->root_url,
-          'reportsExternalSiteMutualDevices/view?site_id=', $site->id ?>'>查看</a>
+          <?php
+          $url = TCClick::app()->root_url . 'reportsExternalSiteMutualDevices/view?site_id=' . $site->id;
+          if(isset($_GET['external_site_id'])) {
+            $url .= '&external_site_id=' . $_GET['external_site_id'];
+          }
+          ?>
+          <a href='<?php echo $url ?>'>查看</a>
         </td>
       </tr>
     <?php } ?>
