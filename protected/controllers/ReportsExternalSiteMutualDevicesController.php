@@ -19,7 +19,7 @@ class ReportsExternalSiteMutualDevicesController extends Controller {
 
   public function actionView() {
     $external_site = ExternalSite::findById($_GET['site_id']);
-    if($external_site) {
+    if($external_site || isset($_GET['external_site_id'])) {
       $this->renderCompatibleWithExternalSite('view', array(
         'external_site' => $external_site,
       ));

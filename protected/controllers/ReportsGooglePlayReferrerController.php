@@ -18,7 +18,7 @@ class ReportsGooglePlayReferrerController extends Controller {
 
   public function actionView() {
     $channel_name = Channel::nameOf($_GET['channel_id']);
-    if($channel_name && !empty($_GET['field'])) {
+    if(($channel_name || isset($_GET['external_site_id'])) && !empty($_GET['field'])) {
       $this->renderCompatibleWithExternalSite('view', array(
         'channel_name' => $channel_name,
         'channel_id' => intval($_GET['channel_id']),
@@ -74,7 +74,7 @@ class ReportsGooglePlayReferrerController extends Controller {
     foreach($daily_counts as $subchannel_id => $counts) {
       $json['stats'][] = array(
         "data" => array_values($counts),
-        "name" => DeviceAndroidInfoName::nameOf($subchannel_id)
+        "name" => DeviceAndroidInfoName::nameOf($subchannel_id),
       );
     }
     $json['dates'] = ReportsController::datesArrayForJsonOutput($start_date, $end_date);

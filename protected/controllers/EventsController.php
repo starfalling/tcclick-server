@@ -14,7 +14,7 @@ class EventsController extends Controller {
 
   public function actionView() {
     $event = Event::loadById($_GET['id']);
-    if($event) {
+    if($event || isset($_GET['external_site_id'])) {
       $this->renderCompatibleWithExternalSite('view', array('event' => $event));
     } else {
       $this->redirect(TCClick::app()->root_url . 'events');
