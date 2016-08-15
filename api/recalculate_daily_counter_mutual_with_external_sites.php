@@ -1,6 +1,6 @@
 <?php
 /**
- * 重新计算daily_counter的各项值
+ * 重新计算某一天的外部站共同用户数据
  * @var string $date
  */
 

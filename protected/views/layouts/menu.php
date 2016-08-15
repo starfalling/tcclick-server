@@ -15,6 +15,7 @@ $sites = ExternalSite::allForCurrentUser();
 		<dd><a href="<?php echo TCClick::app()->root_url, 'reportsChannel', $external_site_id?>">渠道分布</a></dd>
 		<dd><a href="<?php echo TCClick::app()->root_url, 'reportsGooglePlayReferrer', $external_site_id?>">子渠道分布(安卓)</a></dd>
 		<?php if($user && $user->isAdmin()):?>
+		<dd><a href="<?php echo TCClick::app()->root_url, 'ReportsExternalSiteMutualDevices', $external_site_id?>">外部站共有设备</a></dd>
 		<dd><a href="<?php echo TCClick::app()->root_url, 'reportsVersion', $external_site_id?>">版本分布</a></dd>
 		<?php endif?>
 	</dl>
