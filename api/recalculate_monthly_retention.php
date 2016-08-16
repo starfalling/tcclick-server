@@ -22,8 +22,6 @@ for($i = 1; $i <= 8; $i++) {
 
   $start_date = $this_month_start_date;
   $end_date = $this_month_end_date;
-  var_dump($start_date);
-  var_dump($end_date);
 
   // 查询出这一个月的新增用户的最小、最大 ID
   $sql = "select min(id) as `min`, max(id) as `max` 
