@@ -72,6 +72,7 @@ if(!empty($row)) {
     <?php } ?>
     </tbody>
   </table>
+  <p style="margin:5px 5px 5px 10px;">共有设备所指含义为设备上装有或者曾经装有过该APP</p>
 </div>
 
 <script>$(function() {
