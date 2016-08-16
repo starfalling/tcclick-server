@@ -56,7 +56,7 @@ $type_name = $type_names[$type];
       <th style='width:100px;'>时间</th>
       <th style='width:100px;'>新增设备数</th>
       <th colspan="8">留存率(%):&nbsp;&nbsp;&nbsp;&nbsp;
-        <select onchange="location.href=root_url+'reportsRetention?type='+this.options[this.selectedIndex].value;">
+        <select>
           <option id="day_retention" value='daily'>天</option>
           <option id="week_retention" value='weekly' <?php if($type == 'weekly') echo " selected='selected'" ?>>自然周
           </option>
@@ -92,3 +92,14 @@ $type_name = $type_names[$type];
       </tr><?php endforeach; ?>
   </table>
 </div>
+
+
+<script>$(function() {
+    $("table.retention select").change(function() {
+      var url = root_url + 'reportsRetention?type=' + this.options[this.selectedIndex].value;
+      if(external_site_id) {
+        url += '&external_site_id=' + external_site_id;
+      }
+      location.href = url;
+    });
+  });</script>
