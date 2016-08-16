@@ -1,12 +1,32 @@
 <?php
+
+/**
+ * @var string $type
+ */
+
 $from = $_GET['from'] ? $_GET['from'] : date('Y-m-d', time() - 86400 * 30);
 $to = $_GET['to'] ? $_GET['to'] : date('Y-m-d', time() - 86400);
 $channel_id = intval($_GET['channel_id']);
-$type = 'daily';
 
-$sql = "select * from {retention_rate_daily} where `date`>='{$from}' and `date`<='{$to}'
-and channel_id={$channel_id} order by `date`";
-$rows = TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+$sql = null;
+if($type == 'daily') {
+  $sql = "select * from {retention_rate_daily} where `date`>='{$from}' and `date`<='{$to}'
+          and channel_id={$channel_id} order by `date`";
+} elseif($type == 'weekly') {
+  $from = $_GET['from'] ? $_GET['from'] : date('Y-m-d', time() - 86400 * 90);
+  $sql = "select * from {retention_rate_weekly} where `date`>='{$from}' and `date`<='{$to}'
+          and channel_id={$channel_id} order by `date`";
+} elseif($type == 'monthly') {
+  $from = $_GET['from'] ? $_GET['from'] : date('Y-m-d', time() - 86400 * 365);
+  $sql = "select * from {retention_rate_monthly} where `date`>='{$from}' and `date`<='{$to}'
+          and channel_id={$channel_id} order by `date`";
+}
+$rows = array();
+if(!empty($sql)) {
+  $rows = TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+}
+$type_names = array('daily' => '天', 'weekly' => '周', 'monthly' => '月');
+$type_name = $type_names[$type];
 
 ?>
 <h1>留存用户
@@ -17,7 +37,7 @@ $rows = TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     array("label" => "最近两月", "from" => date("Y-m-d", $now - 86400 * 60), "to" => null),
     array("label" => "最近三月", "from" => date("Y-m-d", $now - 86400 * 90), "to" => null),
     array("label" => "最近一年", "from" => date("Y-m-d", $now - 86400 * 365), "to" => null),
-  ), array('from' => date("Y-m-d", $now - 86400 * 30)));
+  ), array('from' => $from));
 
 
   $sql = "select * from {channels} order by id DESC";
@@ -48,18 +68,18 @@ $rows = TCClick::app()->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     <tr>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
-      <td style='text-align:center;padding-right:0;'>1天后</td>
-      <td style='text-align:center;padding-right:0;'>2天后</td>
-      <td style='text-align:center;padding-right:0;'>3天后</td>
-      <td style='text-align:center;padding-right:0;'>4天后</td>
-      <td style='text-align:center;padding-right:0;'>5天后</td>
-      <td style='text-align:center;padding-right:0;'>6天后</td>
-      <td style='text-align:center;padding-right:0;'>7天后</td>
-      <td style='text-align:center;padding-right:0;'>8天后</td>
+      <?php for($i = 1; $i <= 8; $i++) { ?>
+        <td style='text-align:center;padding-right:0;'><?php echo $i, $type_name ?>后</td>
+      <?php } ?>
     </tr>
     <?php foreach($rows as $i => $row): ?>
       <tr>
-      <td><?php echo $row['date'] ?></td>
+      <td><?php
+        if($type == 'monthly') {
+          echo substr($row['date'], 0, 7), ' 月';
+        } else
+          echo $row['date'];
+        ?></td>
       <td><?php echo $row['new_count'] ?></td>
       <td><?php if($row['retention1'] > 0) printf('%.02f', $row['retention1'] / 100) ?>&nbsp;</td>
       <td><?php if($row['retention2'] > 0) printf('%.02f', $row['retention2'] / 100) ?>&nbsp;</td>

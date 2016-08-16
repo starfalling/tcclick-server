@@ -158,7 +158,7 @@ class AnalyzeListenerActiveDevice implements IAnalyzeListener{
 				}
 				
 				// 标记这一天所在的自然周、自然月用户是活跃的
-				$week_start_date = $this->weekStartDateOf($date);
+				$week_start_date = TCClickUtil::weekStartDateOf($date);
 				$active_weeks[$week_start_date] = true;
 				$active_months[substr($date, 0, 7)] = true;
 			}
@@ -210,15 +210,6 @@ class AnalyzeListenerActiveDevice implements IAnalyzeListener{
 				TCClick::app()->db->execute($sql, array(":channel_id"=>$channel_id));
 			}
 		}
-	}
-	
-	/**
-	 * @param mixed $date unix timestamp or date string with format like 2012-07-05
-	 */
-	private function weekStartDateOf($date){
-		$time = is_numeric($date) ? $date : strtotime($date);
-		$dayOfWeek = intval(date("N", $time));
-		return date("Y-m-d", $time-86400*($dayOfWeek-1));
 	}
 	
 	private function createTableForIosJailbrokenCounter(){

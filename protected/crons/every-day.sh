@@ -22,4 +22,8 @@ $PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/drop_old_daily_active_devices
 $PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/drop_old_hourly_active_devices_tables.php yesterday
 
 
+$PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_weekly_retention.php yesterday
+$PHP -d 'date.timezone=Asia/shanghai' $BASEDIR/api/recalculate_monthly_retention.php yesterday
+
+
 
