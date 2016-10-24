@@ -29,7 +29,7 @@ class Channel {
       while(true) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if(!$row) break;
-        self::$all_channels[$row['channel']] = $row['id'];
+        self::$all_channels[strtolower($row['channel'])] = $row['id'];
       }
       TCClick::app()->cache->set('tcclick_all_channels', self::$all_channels);
     }
@@ -53,13 +53,14 @@ class Channel {
    * @return int
    */
   public static function idFor($channel) {
+    $channel_lower = strtolower($channel);
     $all_channels = self::all();
-    if(!$all_channels[$channel]) {
+    if(!$all_channels[$channel_lower]) {
       self::add($channel);
       $all_channels = self::all();
     }
 
-    return $all_channels[$channel];
+    return $all_channels[$channel_lower];
   }
 
   /**
