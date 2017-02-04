@@ -60,7 +60,7 @@ class Device {
     } else {
       $sql = "insert into {devices} (udid, channel_id, version_id, created_at) values
 					(:udid, :channel_id, :version_id, :created_at)
-					on duplicate key update id=last_insert_id(id)";
+					on duplicate key update channel_id=values(channel_id), id=last_insert_id(id)";
       $params = array(":udid" => $this->udid, ":channel_id" => $this->channel_id,
         ":created_at" => $accessed_at, ":version_id" => $this->version_id);
       $result = TCClick::app()->db->execute($sql, $params);
