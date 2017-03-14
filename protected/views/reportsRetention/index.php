@@ -39,8 +39,12 @@ $type_name = $type_names[$type];
     array("label" => "最近一年", "from" => date("Y-m-d", $now - 86400 * 365), "to" => null),
   ), array('from' => $from));
 
-
-  $sql = "select * from {channels} order by id DESC";
+  
+  $sql = "select c.*, sum(new_count) as sum_new from {channels} c
+          inner join {retention_rate_daily} r on c.id=r.channel_id
+          where r.date > '" . date('Y-m-d', time() - 86400 * 7) . "'
+          group by c.id
+          order by sum_new DESC";
   $stmt = TCClick::app()->db->query($sql);
   $channel_array = array();
   $channel_array[] = array("label" => "全部渠道", "channel_id" => "0");
