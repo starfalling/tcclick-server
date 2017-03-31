@@ -54,6 +54,8 @@ class Device {
       $this->id = $row['id'];
       if($this->version_id != $row['version_id']) { // 这是一个升级或者降级的用户
         $this->is_update = true;
+      }
+      if($this->is_update || $this->channel_id != $row['channel_id']) {
         $sql = "update {devices} 
                 set version_id={$this->version_id},
                     channel_id={$this->channel_id}
