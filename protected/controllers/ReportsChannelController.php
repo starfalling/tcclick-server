@@ -20,16 +20,23 @@ class ReportsChannelController extends Controller{
 		$date = $_GET['date'] ? $_GET['date'] : date("Y-m-d");
 		$user = User::current();
 		if($user->isAdmin()){
-			$sql = "select * from {counter_hourly_new} where date=:date and channel_id<>0
-			order by count desc";
+		  $sql = "select channel_id, hour(created_at) as `hour`, count(*) as `count` 
+              from {devices} 
+              where created_at>=:date and created_at<=:date_end
+              group by `hour`, channel_id
+              order by `count` desc";
 		}else{
 			$channel_ids = $user->getChannelIds();
 			if($channel_ids){
-				$sql = "select * from {counter_hourly_new} where date=:date and channel_id in (".join(',', $channel_ids).")
-				order by count desc";
+        $sql = "select channel_id, hour(created_at) as `hour`, count(*) as `count` 
+                from {devices} 
+                where created_at>=:date and created_at<=:date_end
+                    and channel_id in (".join(',', $channel_ids).")
+                group by `hour`, channel_id
+                order by `count` desc";
 			}
 		}
-		$stmt = TCClick::app()->db->query($sql, array(":date"=>$date));
+		$stmt = TCClick::app()->db->query($sql, array(":date"=>$date, ":date_end"=>$date . ' 23:59:59'));
 		$hourly_counts = array();
 		foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row){
 			if(!$hourly_counts[$row['channel_id']]){
