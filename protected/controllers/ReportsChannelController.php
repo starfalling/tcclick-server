@@ -98,17 +98,23 @@ class ReportsChannelController extends Controller {
     $daily_count_with_dates = array();
     $user = User::current();
     if($user->isAdmin()) {
-      $sql = "select `date`, `count`, channel_id from {counter_daily_new}
-			where `date`>=:start and `date`<=:end and channel_id<>0 order by count desc";
+      $sql = "select date(created_at) as `date`, channel_id, count(*) as `count` 
+              from {devices}
+              where created_at>=:start and created_at<=:end and channel_id<>0
+              group by created_at, channel_id
+              order by `count` desc";
     } else {
       $channel_ids = $user->getChannelIds();
       if($channel_ids) {
-        $sql = "select `date`, `count`, channel_id from {counter_daily_new}
-				where `date`>=:start and `date`<=:end and channel_id in (" . join(',', $channel_ids) . ") 
-				order by count desc";
+        $sql = "select date(created_at) as `date`, channel_id, count(*) as `count` 
+              from {devices}
+              where created_at>=:start and created_at<=:end 
+                and channel_id in (" . join(',', $channel_ids) . ")
+              group by created_at, channel_id
+              order by `count` desc";
       }
     }
-    $stmt = TCClick::app()->db->query($sql, array(":start" => $start_date, ":end" => $end_date));
+    $stmt = TCClick::app()->db->query($sql, array(":start" => $start_date, ":end" => $end_date . ' 23:59:59'));
     foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
       if(!$daily_count_with_dates[$row['channel_id']]) {
         $daily_count_with_dates[$row['channel_id']] = ReportsController::generateZeroDailyCount($start_date, $end_date);
