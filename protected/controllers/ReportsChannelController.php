@@ -101,7 +101,7 @@ class ReportsChannelController extends Controller {
       $sql = "select date(created_at) as `date`, channel_id, count(*) as `count` 
               from {devices}
               where created_at>=:start and created_at<=:end and channel_id<>0
-              group by created_at, channel_id
+              group by `date`, channel_id
               order by `count` desc";
     } else {
       $channel_ids = $user->getChannelIds();
@@ -110,7 +110,7 @@ class ReportsChannelController extends Controller {
               from {devices}
               where created_at>=:start and created_at<=:end 
                 and channel_id in (" . join(',', $channel_ids) . ")
-              group by created_at, channel_id
+              group by `date`, channel_id
               order by `count` desc";
       }
     }
