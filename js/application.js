@@ -368,7 +368,7 @@ $(function(){
 		html += '</ss:Worksheet>';
 		html += '</ss:Workbook>';
 
-		var url = "data:application/vnd.ms-excel;charset=utf-8,"+encodeURIComponent(html);
+		var url = window.URL.createObjectURL(new Blob([html], {type: "octet/stream"}));
 		var a = document.createElement('a');
 		a.setAttribute('href', url);
 		a.setAttribute('download', data.title.text+".xls");
