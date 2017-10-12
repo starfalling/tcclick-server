@@ -2,8 +2,7 @@
 <div class="block" style="padding:10px 20px">
 	<?php if(defined('SAE_TMP_PATH')) include 'sae_requirement_check.php';
 	else include 'requirement_check.php' ?>
-	<p>tcclick是一个山寨 <a href="http://www.umeng.com/" target="_blank">友盟</a>的移动平台的开源用户统计项目。</p>
-	<p><strong>据小道消息爆料，友盟被阿里巴巴7000万美刀收购，你觉得你的数据还安全不？</strong></p>
+	<p>tcclick是一个参考 <a href="http://www.umeng.com/" target="_blank">友盟</a>进行开发的移动平台的开源用户统计项目。</p>
 	<p>
 	服务器端源码：<a href="https://github.com/starfalling/tcclick-server" target="_blank">https://github.com/starfalling/tcclick-server</a>
 	<br/>IOS端源码：<a href="https://github.com/starfalling/tcclick-ios" target="_blank">https://github.com/starfalling/tcclick-ios</a>
