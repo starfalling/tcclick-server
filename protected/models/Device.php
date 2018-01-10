@@ -40,6 +40,10 @@ class Device {
       if(!empty($referrer_decoded['utm_source'])) $pid = $referrer_decoded['utm_source'];
       if(!empty($referrer_decoded['utm_campaign'])) $campaign = $referrer_decoded['utm_campaign'];
       if(!empty($referrer_decoded['utm_medium'])) $af_siteid = $referrer_decoded['utm_medium'];
+      if(!empty($referrer_decoded['campaigntype']) && $referrer_decoded['campaigntype']==='a') {
+        // referrer 中包含 campaigntype=a 的为 adwords 广告的量
+        $pid = 'adwords';
+      }
 
       if(!empty($pid) && $pid != $this->channel) {
         $this->channel = $pid;
