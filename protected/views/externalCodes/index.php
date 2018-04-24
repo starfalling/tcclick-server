@@ -29,12 +29,14 @@
   $('a#create_external_code').click(function(){
     var form = "<form action='<?php echo TCClick::app()->root_url?>externalCodes/create' method='post'>";
     form += "</form>";
-    $(form).submit();
+    $("body").append(form);
+    $("form").submit();
   });
   $('a.delete').click(function(){
     var form = "<form action='<?php echo TCClick::app()->root_url?>externalCodes/delete' method='post'>";
     form += "<input name='id' value='"+$(this).attr('id')+"' />";
     form += "</form>";
-    $(form).submit();
+    $("body").append(form);
+    $("form").submit();
   });
 });</script>
