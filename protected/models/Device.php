@@ -44,6 +44,9 @@ class Device {
         // referrer 中包含 campaigntype=a 的为 adwords 广告的量
         $pid = 'adwords';
       }
+      //兼容adwords导流情况
+      if(!empty($referrer_decoded['adsplayload'])) $pid = "adwords";
+      if(!empty($referrer_decoded['gclid'])) $pid = "adwords";
 
       if(!empty($pid) && $pid != $this->channel) {
         $this->channel = $pid;
