@@ -2,6 +2,11 @@
 
 $yesterday = date('Y-m-d', time() - 86400);
 $today = date('Y-m-d');
+if($_GET['date']){
+  $today = $_GET['date'];
+  $yesterday = date('Y-m-d', strtotime($today) - 86400);
+}
+
 
 function loadSubchannelCounts($table_name, $field_name, $date) {
   $counts = array();
@@ -29,14 +34,14 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
 
 
 ?>
-<h1>Google Play 子渠道分布</h1>
+<h1>Google Play 子渠道分布 <input type="date " value="<?= $_GET['date']?$_GET['date']:$today; ?>"/></h1>
 <div class="block">
   <h3>medium (Google) / site (AppsFlyer)</h3>
   <table>
     <thead>
     <tr>
       <th>渠道</th>
-      <th>子渠道</th>
+      <th style='width:80px'>子渠道</th>
       <th>总设备数</th>
       <th>昨日新增</th>
       <th>昨日活跃</th>
@@ -57,7 +62,7 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
             <td rowspan="<?php echo count($subchannel_counts) ?>">
               <?php echo Channel::nameOf($channel_id) ?></td>
           <?php endif ?>
-          <td><?php echo DeviceAndroidInfoName::nameOf($site_id) ?></td>
+          <td style='word-break:break-all;'><?php echo DeviceAndroidInfoName::nameOf($site_id) ?></td>
           <td><?php echo $count ?></td>
           <td><?php echo $yesterday_new_counts[$channel_id][$site_id] ?></td>
           <td><?php echo $yesterday_active_counts[$channel_id][$site_id] ?></td>
@@ -96,7 +101,7 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
     <thead>
     <tr>
       <th>渠道</th>
-      <th>Campaign</th>
+      <th style='width:80px'>Campaign</th>
       <th>总设备数</th>
       <th>昨日新增</th>
       <th>昨日活跃</th>
@@ -117,7 +122,7 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
             <td rowspan="<?php echo count($subchannel_counts) ?>">
               <?php echo Channel::nameOf($channel_id) ?></td>
           <?php endif ?>
-          <td><?php echo DeviceAndroidInfoName::nameOf($campaign_id) ?></td>
+          <td style='word-break:break-all;'><?php echo DeviceAndroidInfoName::nameOf($campaign_id) ?></td>
           <td><?php echo $count ?></td>
           <td><?php echo $yesterday_new_counts[$channel_id][$campaign_id] ?></td>
           <td><?php echo $yesterday_active_counts[$channel_id][$campaign_id] ?></td>
@@ -148,4 +153,15 @@ $today_active_counts = loadSubchannelCounts('counter_daily_active_with_android_i
         else this.href += "?external_site_id=" + external_site_id;
       });
     }
+
+    $("input[type=date]").change(function(){
+      var date = $(this).val();
+      var url = window.location.href;
+      if(url.indexOf('?') != -1){
+        window.location.href = url + "&date=" + date;
+      }else{
+        window.location.href = url + "?date=" + date;
+      }
+    });
+
   });</script>
